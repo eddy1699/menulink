@@ -1,0 +1,98 @@
+{
+  "menu": {
+    "agotado": "Sold out",
+    "disponible": "Available",
+    "powered_by": "Powered by MenuQR",
+    "all_categories": "All"
+  },
+  "allergens": {
+    "gluten": "Gluten",
+    "lacteos": "Dairy",
+    "mariscos": "Seafood",
+    "huevo": "Egg",
+    "frutos_secos": "Tree nuts",
+    "soya": "Soy"
+  },
+  "demo": {
+    "banner": "You're viewing a demo — Create your menu for free →"
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "testimonials": "Testimonials",
+    "demo": "Demo",
+    "login": "Sign in",
+    "create_menu": "Create free menu"
+  },
+  "hero": {
+    "eyebrow": "For restaurants in Peru",
+    "title": "Your digital menu, ready in 10 minutes",
+    "subtitle": "Digitize your menu, share it with a QR code and update prices instantly. No apps, no complications.",
+    "cta_primary": "Start free →",
+    "cta_secondary": "View demo",
+    "stat_restaurants": "+500 restaurants",
+    "stat_time": "10 min to publish",
+    "stat_price": "From S/ 39.90/month"
+  },
+  "features": {
+    "title": "Everything your restaurant needs",
+    "subtitle": "Simple, powerful and made for the Peruvian market",
+    "brand": "Menu with your brand",
+    "brand_desc": "Customize colors, logo and description to reflect your identity",
+    "qr": "Instant Link + QR",
+    "qr_desc": "Share your menu with a unique link or print your QR in seconds",
+    "multilang": "Multilingual ES/EN/PT",
+    "multilang_desc": "Serve tourists and foreign customers in their language",
+    "soldout": "Real-time sold out",
+    "soldout_desc": "Mark dishes as sold out instantly from your phone",
+    "photos": "Photos of your dishes",
+    "photos_desc": "Show appetizing images of your menu (Pro+ Plan)",
+    "analytics": "Visit analytics",
+    "analytics_desc": "Know how many customers visit your menu and from where (Pro+ Plan)"
+  },
+  "how_it_works": {
+    "title": "How it works",
+    "subtitle": "Four steps to have your digital menu",
+    "step1": "Create your account",
+    "step1_desc": "Sign up for free in less than 2 minutes",
+    "step2": "Customize your brand",
+    "step2_desc": "Upload your logo and choose your colors",
+    "step3": "Load your menu",
+    "step3_desc": "Add categories and dishes with their prices in S/",
+    "step4": "Share your QR",
+    "step4_desc": "Download your QR and print it on your tables",
+    "onboarding_banner": "Don't have time? We do it for you →"
+  },
+  "pricing": {
+    "title": "Clear pricing, no surprises",
+    "subtitle": "No long-term contract · No credit card to start",
+    "per_month": "/month",
+    "popular": "Most popular",
+    "get_started": "Get started",
+    "contact_sales": "Contact sales",
+    "all_plans_include": "All plans include",
+    "feature_link_qr": "Public link + downloadable QR",
+    "feature_colors": "Custom colors and logo",
+    "feature_multilang": "Multilingual ES/EN/PT",
+    "feature_soldout": "Real-time sold out mode",
+    "feature_no_contract": "No long-term contract"
+  },
+  "testimonials": {
+    "title": "What our customers say",
+    "subtitle": "Peruvian restaurants that have already digitized their menu"
+  },
+  "cta_final": {
+    "title": "Your digital menu, ready before dinner",
+    "subtitle": "No credit card · No contract · In 10 minutes",
+    "button": "Create my free menu →"
+  },
+  "footer": {
+    "description": "The digital menu for Peruvian restaurants",
+    "links": "Links",
+    "legal": "Legal",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "copyright": "© 2026 MenuQR Peru. All rights reserved."
+  }
+}

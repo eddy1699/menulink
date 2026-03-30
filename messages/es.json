@@ -1,0 +1,98 @@
+{
+  "menu": {
+    "agotado": "Agotado",
+    "disponible": "Disponible",
+    "powered_by": "Powered by MenuQR",
+    "all_categories": "Todas"
+  },
+  "allergens": {
+    "gluten": "Gluten",
+    "lacteos": "Lácteos",
+    "mariscos": "Mariscos",
+    "huevo": "Huevo",
+    "frutos_secos": "Frutos secos",
+    "soya": "Soya"
+  },
+  "demo": {
+    "banner": "Estás viendo una demo — Crea tu carta gratis →"
+  },
+  "nav": {
+    "features": "Funciones",
+    "pricing": "Precios",
+    "testimonials": "Testimonios",
+    "demo": "Demo",
+    "login": "Iniciar sesión",
+    "create_menu": "Crear menú gratis"
+  },
+  "hero": {
+    "eyebrow": "Para restaurantes en Perú",
+    "title": "Tu carta digital, lista en 10 minutos",
+    "subtitle": "Digitaliza tu menú, compártelo con un QR y actualiza precios al instante. Sin apps, sin complicaciones.",
+    "cta_primary": "Empieza gratis →",
+    "cta_secondary": "Ver demo",
+    "stat_restaurants": "+500 restaurantes",
+    "stat_time": "10 min para publicar",
+    "stat_price": "Desde S/ 39.90/mes"
+  },
+  "features": {
+    "title": "Todo lo que necesita tu restaurante",
+    "subtitle": "Simple, potente y hecho para el mercado peruano",
+    "brand": "Carta con tu marca",
+    "brand_desc": "Personaliza colores, logo y descripción para reflejar tu identidad",
+    "qr": "Link + QR instantáneo",
+    "qr_desc": "Comparte tu carta con un link único o imprime tu QR en segundos",
+    "multilang": "Multiidioma ES/EN/PT",
+    "multilang_desc": "Atiende a turistas y clientes extranjeros en su idioma",
+    "soldout": "Agotado en tiempo real",
+    "soldout_desc": "Marca platos como agotados al instante desde tu celular",
+    "photos": "Fotos de tus platos",
+    "photos_desc": "Muestra imágenes apetitosas de tu carta (Plan Pro+)",
+    "analytics": "Analítica de visitas",
+    "analytics_desc": "Conoce cuántos clientes visitan tu carta y desde dónde (Plan Pro+)"
+  },
+  "how_it_works": {
+    "title": "Cómo funciona",
+    "subtitle": "Cuatro pasos para tener tu carta digital",
+    "step1": "Crea tu cuenta",
+    "step1_desc": "Regístrate gratis en menos de 2 minutos",
+    "step2": "Personaliza tu marca",
+    "step2_desc": "Sube tu logo y elige tus colores",
+    "step3": "Carga tu carta",
+    "step3_desc": "Agrega categorías y platos con sus precios en S/",
+    "step4": "Comparte tu QR",
+    "step4_desc": "Descarga tu QR e imprímelo en tus mesas",
+    "onboarding_banner": "¿No tienes tiempo? Lo hacemos nosotros →"
+  },
+  "pricing": {
+    "title": "Precios claros, sin sorpresas",
+    "subtitle": "Sin contrato de permanencia · Sin tarjeta de crédito para empezar",
+    "per_month": "/mes",
+    "popular": "Más popular",
+    "get_started": "Empezar ahora",
+    "contact_sales": "Contactar ventas",
+    "all_plans_include": "Todos los planes incluyen",
+    "feature_link_qr": "Link público + QR descargable",
+    "feature_colors": "Colores y logo personalizados",
+    "feature_multilang": "Multiidioma ES/EN/PT",
+    "feature_soldout": "Modo agotado en tiempo real",
+    "feature_no_contract": "Sin contrato de permanencia"
+  },
+  "testimonials": {
+    "title": "Lo que dicen nuestros clientes",
+    "subtitle": "Restaurantes peruanos que ya digitalizaron su carta"
+  },
+  "cta_final": {
+    "title": "Tu carta digital, lista antes de la cena",
+    "subtitle": "Sin tarjeta de crédito · Sin permanencia · En 10 minutos",
+    "button": "Crear mi carta gratis →"
+  },
+  "footer": {
+    "description": "La carta digital para restaurantes peruanos",
+    "links": "Enlaces",
+    "legal": "Legal",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "contact": "Contacto",
+    "copyright": "© 2026 MenuQR Perú. Todos los derechos reservados."
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "menu": {
+    "agotado": "Esgotado",
+    "disponible": "Disponível",
+    "powered_by": "Powered by MenuQR",
+    "all_categories": "Todas"
+  },
+  "allergens": {
+    "gluten": "Glúten",
+    "lacteos": "Laticínios",
+    "mariscos": "Frutos do mar",
+    "huevo": "Ovo",
+    "frutos_secos": "Nozes",
+    "soya": "Soja"
+  },
+  "demo": {
+    "banner": "Você está vendo uma demonstração — Crie seu cardápio grátis →"
+  },
+  "nav": {
+    "features": "Funcionalidades",
+    "pricing": "Preços",
+    "testimonials": "Depoimentos",
+    "demo": "Demo",
+    "login": "Entrar",
+    "create_menu": "Criar cardápio grátis"
+  },
+  "hero": {
+    "eyebrow": "Para restaurantes no Peru",
+    "title": "Seu cardápio digital, pronto em 10 minutos",
+    "subtitle": "Digitalize seu cardápio, compartilhe com um QR e atualize preços instantaneamente.",
+    "cta_primary": "Comece grátis →",
+    "cta_secondary": "Ver demo",
+    "stat_restaurants": "+500 restaurantes",
+    "stat_time": "10 min para publicar",
+    "stat_price": "A partir de S/ 39.90/mês"
+  },
+  "features": {
+    "title": "Tudo que seu restaurante precisa",
+    "subtitle": "Simples, poderoso e feito para o mercado peruano",
+    "brand": "Cardápio com sua marca",
+    "brand_desc": "Personalize cores, logo e descrição para refletir sua identidade",
+    "qr": "Link + QR instantâneo",
+    "qr_desc": "Compartilhe seu cardápio com um link único ou imprima seu QR em segundos",
+    "multilang": "Multilíngue ES/EN/PT",
+    "multilang_desc": "Atenda turistas e clientes estrangeiros em seu idioma",
+    "soldout": "Esgotado em tempo real",
+    "soldout_desc": "Marque pratos como esgotados instantaneamente do seu celular",
+    "photos": "Fotos dos seus pratos",
+    "photos_desc": "Mostre imagens apetitosas do seu cardápio (Plano Pro+)",
+    "analytics": "Análise de visitas",
+    "analytics_desc": "Saiba quantos clientes visitam seu cardápio e de onde (Plano Pro+)"
+  },
+  "how_it_works": {
+    "title": "Como funciona",
+    "subtitle": "Quatro passos para ter seu cardápio digital",
+    "step1": "Crie sua conta",
+    "step1_desc": "Cadastre-se gratuitamente em menos de 2 minutos",
+    "step2": "Personalize sua marca",
+    "step2_desc": "Envie seu logo e escolha suas cores",
+    "step3": "Carregue seu cardápio",
+    "step3_desc": "Adicione categorias e pratos com seus preços em S/",
+    "step4": "Compartilhe seu QR",
+    "step4_desc": "Baixe seu QR e imprima nas suas mesas",
+    "onboarding_banner": "Não tem tempo? Fazemos por você →"
+  },
+  "pricing": {
+    "title": "Preços claros, sem surpresas",
+    "subtitle": "Sem contrato de fidelidade · Sem cartão de crédito para começar",
+    "per_month": "/mês",
+    "popular": "Mais popular",
+    "get_started": "Começar agora",
+    "contact_sales": "Contatar vendas",
+    "all_plans_include": "Todos os planos incluem",
+    "feature_link_qr": "Link público + QR para download",
+    "feature_colors": "Cores e logo personalizados",
+    "feature_multilang": "Multilíngue ES/EN/PT",
+    "feature_soldout": "Modo esgotado em tempo real",
+    "feature_no_contract": "Sem contrato de fidelidade"
+  },
+  "testimonials": {
+    "title": "O que nossos clientes dizem",
+    "subtitle": "Restaurantes peruanos que já digitalizaram seu cardápio"
+  },
+  "cta_final": {
+    "title": "Seu cardápio digital, pronto antes do jantar",
+    "subtitle": "Sem cartão de crédito · Sem contrato · Em 10 minutos",
+    "button": "Criar meu cardápio grátis →"
+  },
+  "footer": {
+    "description": "O cardápio digital para restaurantes peruanos",
+    "links": "Links",
+    "legal": "Legal",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "contact": "Contato",
+    "copyright": "© 2026 MenuQR Peru. Todos os direitos reservados."
+  }
+}

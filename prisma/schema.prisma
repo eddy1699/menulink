@@ -1,0 +1,106 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String      @id @default(cuid())
+  email      String      @unique
+  password   String
+  name       String
+  role       Role        @default(RESTAURANT_ADMIN)
+  restaurant Restaurant?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+enum Role {
+  SUPERADMIN
+  RESTAURANT_ADMIN
+}
+
+model Restaurant {
+  id             String      @id @default(cuid())
+  slug           String      @unique
+  name           String
+  description    String?
+  logoUrl        String?
+  primaryColor   String      @default("#C0392B")
+  bgColor        String      @default("#FFF8F0")
+  phone          String?
+  address        String?
+  district       String?
+  city           String      @default("Lima")
+  isActive       Boolean     @default(true)
+  plan           PlanType    @default(STARTER)
+  planExpiresAt  DateTime?
+  onboardingPaid Boolean     @default(false)
+  languages      String[]    @default(["es"])
+  ownerId        String      @unique
+  owner          User        @relation(fields: [ownerId], references: [id])
+  categories     Category[]
+  visits         Visit[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+enum PlanType {
+  STARTER
+  PRO
+  BUSINESS
+}
+
+model Category {
+  id           String      @id @default(cuid())
+  name         String
+  nameEn       String?
+  namePt       String?
+  order        Int         @default(0)
+  restaurantId String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items        MenuItem[]
+  createdAt    DateTime    @default(now())
+}
+
+model MenuItem {
+  id            String    @id @default(cuid())
+  name          String
+  nameEn        String?
+  namePt        String?
+  description   String?
+  descriptionEn String?
+  descriptionPt String?
+  price         Float
+  imageUrl      String?
+  isAvailable   Boolean   @default(true)
+  order         Int       @default(0)
+  categoryId    String
+  category      Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  allergens     String[]  @default([])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Visit {
+  id           String     @id @default(cuid())
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  source       String?
+  language     String?
+  createdAt    DateTime   @default(now())
+}
+
+model OnboardingRequest {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  phone          String
+  restaurantName String
+  message        String?
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+}
