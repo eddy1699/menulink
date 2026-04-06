@@ -63,7 +63,7 @@ function formatAmount(amount: number) {
 }
 
 export function PlanClient({
-  restaurantId,
+  restaurantId: _restaurantId,
   currentPlan,
   planExpiresAt,
   trialEndsAt,

@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select } from '@/components/ui/select'
 import { Pencil } from 'lucide-react'
 
 interface OnboardingRequest {
