@@ -1,10 +1,6 @@
 import crypto from 'crypto'
 import { PlanType } from '@prisma/client'
 
-const MODE = process.env.IZIPAY_MODE || 'TEST'
-const API_URL = process.env.IZIPAY_API_URL!
-const USERNAME = process.env.IZIPAY_USERNAME!
-
 // Amounts in centimos (PEN)
 export const PLAN_AMOUNTS: Record<PlanType, number> = {
   STARTER:  990,   // S/ 9.90
@@ -12,26 +8,32 @@ export const PLAN_AMOUNTS: Record<PlanType, number> = {
   BUSINESS: 2990,  // S/ 29.90
 }
 
+function isProduction() {
+  const mode = process.env.IZIPAY_MODE || 'TEST'
+  return mode === 'PROD' || mode === 'PRODUCTION'
+}
+
 function getPassword() {
-  return MODE === 'PROD' || MODE === 'PRODUCTION'
+  return isProduction()
     ? process.env.IZIPAY_PROD_PASSWORD!
     : process.env.IZIPAY_TEST_PASSWORD!
 }
 
 export function getPublicKey() {
-  return MODE === 'PROD' || MODE === 'PRODUCTION'
+  return isProduction()
     ? process.env.NEXT_PUBLIC_IZIPAY_PUBLIC_KEY_PROD!
     : process.env.NEXT_PUBLIC_IZIPAY_PUBLIC_KEY_TEST!
 }
 
 export function getHmacKey() {
-  return MODE === 'PROD' || MODE === 'PRODUCTION'
+  return isProduction()
     ? process.env.IZIPAY_HMAC_PROD!
     : process.env.IZIPAY_HMAC_TEST!
 }
 
 function getAuthHeader() {
-  const credentials = Buffer.from(`${USERNAME}:${getPassword()}`).toString('base64')
+  const username = process.env.IZIPAY_USERNAME!
+  const credentials = Buffer.from(`${username}:${getPassword()}`).toString('base64')
   return `Basic ${credentials}`
 }
 
@@ -46,7 +48,7 @@ export async function createFormToken(params: CreateFormTokenParams) {
   const { orderId, plan, email, restaurantId } = params
   const amount = PLAN_AMOUNTS[plan]
 
-  const res = await fetch(`${API_URL}/api-payment/V4/Charge/CreatePayment`, {
+  const res = await fetch(`${process.env.IZIPAY_API_URL}/api-payment/V4/Charge/CreatePayment`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
