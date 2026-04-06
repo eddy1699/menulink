@@ -4,6 +4,7 @@ import type { NextAuthConfig } from 'next-auth'
 // Usada exclusivamente por middleware.ts
 export const authConfig: NextAuthConfig = {
   providers: [], // los providers reales se definen en auth.ts
+  trustHost: true,
   pages: {
     signIn: '/login',
   },
