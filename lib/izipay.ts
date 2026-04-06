@@ -13,19 +13,19 @@ export const PLAN_AMOUNTS: Record<PlanType, number> = {
 }
 
 function getPassword() {
-  return MODE === 'PRODUCTION'
+  return MODE === 'PROD' || MODE === 'PRODUCTION'
     ? process.env.IZIPAY_PROD_PASSWORD!
     : process.env.IZIPAY_TEST_PASSWORD!
 }
 
 export function getPublicKey() {
-  return MODE === 'PRODUCTION'
+  return MODE === 'PROD' || MODE === 'PRODUCTION'
     ? process.env.NEXT_PUBLIC_IZIPAY_PUBLIC_KEY_PROD!
     : process.env.NEXT_PUBLIC_IZIPAY_PUBLIC_KEY_TEST!
 }
 
 export function getHmacKey() {
-  return MODE === 'PRODUCTION'
+  return MODE === 'PROD' || MODE === 'PRODUCTION'
     ? process.env.IZIPAY_HMAC_PROD!
     : process.env.IZIPAY_HMAC_TEST!
 }

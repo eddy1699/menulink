@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 
 const MODE = process.env.NEXT_PUBLIC_IZIPAY_MODE || process.env.IZIPAY_MODE || 'TEST'
-const PUBLIC_KEY = MODE === 'PROD'
+const PUBLIC_KEY = MODE === 'PROD' || MODE === 'PRODUCTION'
   ? process.env.NEXT_PUBLIC_IZIPAY_PUBLIC_KEY_PROD!
   : process.env.NEXT_PUBLIC_IZIPAY_PUBLIC_KEY_TEST!
 const BASE = 'https://static.micuentaweb.pe/static/js/krypton-client/V4.0'
