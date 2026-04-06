@@ -86,6 +86,28 @@ export async function PUT(req: NextRequest) {
   }
 }
 
+// Bulk reorder items within a category: { itemIds: string[] }
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await auth()
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const { itemIds } = await req.json() as { itemIds: string[] }
+    if (!Array.isArray(itemIds)) {
+      return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+    }
+    await prisma.$transaction(
+      itemIds.map((id, index) =>
+        prisma.menuItem.update({ where: { id }, data: { order: index } })
+      )
+    )
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+  }
+}
+
 export async function DELETE(req: NextRequest) {
   try {
     const session = await auth()

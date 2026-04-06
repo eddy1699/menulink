@@ -22,9 +22,9 @@ export default async function AdminLayout({
         <div className="p-5 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
           <span
             className="text-lg font-bold"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-gold)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-gold)' }}
           >
-            MenuQR Admin
+            Karta Admin
           </span>
           <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
             Superadmin
@@ -37,6 +37,7 @@ export default async function AdminLayout({
             { href: '/admin/restaurantes', label: 'Restaurantes' },
             { href: '/admin/usuarios', label: 'Usuarios' },
             { href: '/admin/onboarding', label: 'Onboarding' },
+            { href: '/admin/dominios', label: 'Dominios' },
             { href: '/admin/analitica', label: 'Analítica' },
           ].map((item) => (
             <Link

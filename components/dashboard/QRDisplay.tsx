@@ -54,7 +54,7 @@ export function QRDisplay({ url, primaryColor, restaurantName }: QRDisplayProps)
         <Button
           onClick={handleDownload}
           className="flex-1 gap-2 font-semibold"
-          style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+          style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
         >
           <Download size={16} />
           Descargar QR

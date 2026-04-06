@@ -35,16 +35,16 @@ const features = [
 
 export function Features() {
   return (
-    <section id="funciones" className="py-20 px-4" style={{ backgroundColor: 'var(--brand-warm)' }}>
+    <section id="funciones" className="py-20 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <h2
-            className="text-3xl sm:text-4xl font-bold mb-4"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            className="text-3xl sm:text-4xl font-bold mb-4 text-[#0D0D0D]"
+            style={{ fontFamily: 'var(--font-display)' }}
           >
             Todo lo que necesita tu restaurante
           </h2>
-          <p className="text-lg" style={{ color: 'var(--brand-muted)' }}>
+          <p className="text-lg text-[#6B7280]">
             Simple, potente y hecho para el mercado peruano
           </p>
         </div>
@@ -53,25 +53,15 @@ export function Features() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="p-6 rounded-2xl border hover:shadow-md transition-shadow"
-              style={{
-                backgroundColor: 'var(--brand-cream)',
-                borderColor: 'var(--brand-border)',
-              }}
+              className="p-6 rounded-2xl border border-[#E4E4E7] bg-white hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-shadow"
             >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                style={{ backgroundColor: 'var(--brand-gold)', opacity: 0.9 }}
-              >
-                <f.icon size={24} style={{ color: 'var(--brand-dark)' }} />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-[#EEF2FF]">
+                <f.icon size={22} style={{ color: '#1B4FD8' }} />
               </div>
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
-              >
+              <h3 className="text-lg font-bold mb-2 text-[#0D0D0D]">
                 {f.title}
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--brand-muted)' }}>
+              <p className="text-sm leading-relaxed text-[#6B7280]">
                 {f.desc}
               </p>
             </div>

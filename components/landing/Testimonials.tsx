@@ -50,7 +50,7 @@ export function Testimonials() {
         <div className="text-center mb-14">
           <h2
             className="text-3xl sm:text-4xl font-bold mb-4"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
           >
             Lo que dicen nuestros clientes
           </h2>
@@ -85,7 +85,7 @@ export function Testimonials() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                  style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+                  style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
                 >
                   {t.name.charAt(0)}
                 </div>

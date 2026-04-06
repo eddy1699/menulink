@@ -11,49 +11,57 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-dm-sans)', 'sans-serif'],
-        playfair: ['var(--font-playfair)', 'serif'],
+        sans:    ['var(--font-body)', 'DM Sans', 'sans-serif'],
+        display: ['var(--font-body)', 'DM Sans', 'sans-serif'],
+        body:    ['var(--font-body)', 'DM Sans', 'sans-serif'],
       },
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        border:     'hsl(var(--border))',
+        input:      'hsl(var(--input))',
+        ring:       'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
+          DEFAULT:    'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
+          DEFAULT:    'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
+          DEFAULT:    'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
+          DEFAULT:    'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
+          DEFAULT:    'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
+          DEFAULT:    'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
         },
         card: {
-          DEFAULT: 'hsl(var(--card))',
+          DEFAULT:    'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        'brand-dark': 'var(--brand-dark)',
-        'brand-gold': 'var(--brand-gold)',
-        'brand-cream': 'var(--brand-cream)',
-        'brand-warm': 'var(--brand-warm)',
+        // Karta design tokens
+        karta:  '#1B4FD8',
+        ink:    '#0D0D0D',
+        cloud:  '#F5F5F7',
+        lima:   '#22C55E',
+        aji:    '#F59E0B',
+        // legacy brand aliases
+        'brand-dark':   'var(--brand-dark)',
+        'brand-gold':   'var(--brand-gold)',
+        'brand-cream':  'var(--brand-cream)',
+        'brand-warm':   'var(--brand-warm)',
         'brand-border': 'var(--brand-border)',
-        'brand-muted': 'var(--brand-muted)',
+        'brand-muted':  'var(--brand-muted)',
       },
       borderRadius: {
         lg: 'var(--radius)',

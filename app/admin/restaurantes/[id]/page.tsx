@@ -45,7 +45,7 @@ export default async function AdminRestaurantDetailPage({ params }: PageProps) {
         <div>
           <h1
             className="text-2xl font-bold"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
           >
             {restaurant.name}
           </h1>
@@ -69,12 +69,12 @@ export default async function AdminRestaurantDetailPage({ params }: PageProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card style={{ borderColor: 'var(--brand-border)' }}>
           <CardHeader>
-            <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>Información</CardTitle>
+            <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>Información</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span style={{ color: 'var(--brand-muted)' }}>Plan:</span>
-              <Badge style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}>{restaurant.plan}</Badge>
+              <Badge style={{ backgroundColor: '#1B4FD8', color: '#fff' }}>{restaurant.plan}</Badge>
             </div>
             <div className="flex justify-between">
               <span style={{ color: 'var(--brand-muted)' }}>Ciudad:</span>
@@ -99,7 +99,7 @@ export default async function AdminRestaurantDetailPage({ params }: PageProps) {
 
         <Card style={{ borderColor: 'var(--brand-border)' }}>
           <CardHeader>
-            <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>Propietario</CardTitle>
+            <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>Propietario</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="flex justify-between">
@@ -119,7 +119,7 @@ export default async function AdminRestaurantDetailPage({ params }: PageProps) {
 
         <Card style={{ borderColor: 'var(--brand-border)' }}>
           <CardHeader>
-            <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>Carta</CardTitle>
+            <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>Carta</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div className="flex justify-between">

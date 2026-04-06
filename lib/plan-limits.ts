@@ -36,9 +36,9 @@ export function getPlanLimits(plan: PlanType) {
 }
 
 export const PLAN_PRICES = {
-  STARTER: 39.90,
-  PRO: 79.90,
-  BUSINESS: 119.90,
+  STARTER: 9.90,
+  PRO: 19.90,
+  BUSINESS: 29.90,
 } as const
 
 export const PLAN_NAMES = {

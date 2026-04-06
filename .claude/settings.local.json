@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(node -e ':*)",
+      "Bash(npm run:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node -e \"const { Client } = require\\('pg'\\); const c = new Client\\({ connectionString: 'postgresql://postgres:Vamosparalaplaya2026!@db.yibrtosnszcsoklwiegs.supabase.co:5432/postgres' }\\); c.connect\\(\\).then\\(\\(\\) => { console.log\\('OK'\\); c.end\\(\\); }\\).catch\\(e => console.error\\('ERROR:', e.message\\)\\);\")",
+      "Bash(ping db.yibrtosnszcsoklwiegs.supabase.co -n 2)",
+      "Bash(nslookup db.yibrtosnszcsoklwiegs.supabase.co)",
+      "Bash(nslookup db.yibrtosnszcsoklwiegs.supabase.co 8.8.8.8)",
+      "Bash(nslookup -type=A db.yibrtosnszcsoklwiegs.supabase.co 8.8.8.8)",
+      "Bash(nslookup -type=A aws-0-us-east-1.pooler.supabase.com 8.8.8.8)",
+      "Bash(nslookup -type=A aws-0-us-east-2.pooler.supabase.com 8.8.8.8)"
+    ]
+  }
+}

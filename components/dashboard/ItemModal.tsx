@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
+import { ImagePlus, X, Lock } from 'lucide-react'
 
 const itemSchema = z.object({
   name: z.string().min(1, 'Nombre requerido'),
@@ -42,14 +43,17 @@ interface MenuItem {
   isAvailable: boolean
   allergens?: string[]
   categoryId?: string
+  imageUrl?: string | null
 }
 
 interface ItemModalProps {
   open: boolean
   onClose: () => void
-  onSave: (data: Record<string, unknown>) => Promise<void>
+  onSave: (data: Record<string, unknown>) => Promise<{ id: string }>
+  onImageSaved: (itemId: string, url: string) => void
   item?: MenuItem | null
   categoryId?: string
+  plan: string
 }
 
 const ALLERGENS = [
@@ -61,9 +65,79 @@ const ALLERGENS = [
   { id: 'soya', label: 'Soya' },
 ]
 
-export function ItemModal({ open, onClose, onSave, item, categoryId }: ItemModalProps) {
+function ItemPreview({
+  name,
+  description,
+  price,
+  isAvailable,
+  imagePreview,
+}: {
+  name: string
+  description?: string
+  price: number
+  isAvailable: boolean
+  imagePreview: string | null
+}) {
+  const hasContent = name || price > 0
+
+  return (
+    <div>
+      <p className="text-xs font-medium mb-1.5" style={{ color: 'var(--brand-muted)' }}>
+        Vista previa del plato
+      </p>
+      <div
+        className="flex gap-3 p-3 rounded-xl border"
+        style={{
+          backgroundColor: 'white',
+          borderColor: 'var(--brand-border)',
+          opacity: hasContent ? 1 : 0.4,
+        }}
+      >
+        {imagePreview ? (
+          <img src={imagePreview} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0" />
+        ) : (
+          <div
+            className="w-14 h-14 rounded-lg shrink-0 flex items-center justify-center text-lg"
+            style={{ backgroundColor: 'var(--brand-warm)' }}
+          >
+            🍽️
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-start gap-2">
+            <span className="font-semibold text-sm" style={{ color: 'var(--brand-dark)' }}>
+              {name || 'Nombre del plato'}
+            </span>
+            <span className="text-sm font-bold shrink-0" style={{ color: '#C0392B' }}>
+              {price > 0
+                ? new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(price)
+                : 'S/ 0.00'}
+            </span>
+          </div>
+          {description && (
+            <p className="text-xs mt-0.5 line-clamp-2" style={{ color: 'var(--brand-muted)' }}>
+              {description}
+            </p>
+          )}
+          {!isAvailable && (
+            <span className="inline-block text-xs mt-1 px-1.5 py-0.5 rounded bg-red-100 text-red-600">
+              Agotado
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function ItemModal({ open, onClose, onSave, onImageSaved, item, categoryId, plan }: ItemModalProps) {
   const [saving, setSaving] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>(item?.allergens || [])
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(item?.imageUrl || null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const canUploadPhoto = plan !== 'STARTER'
 
   const {
     register,
@@ -97,34 +171,129 @@ export function ItemModal({ open, onClose, onSave, item, categoryId }: ItemModal
     )
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+  }
+
+  const handleRemoveImage = () => {
+    setImageFile(null)
+    setImagePreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   const onSubmit: SubmitHandler<ItemFormData> = async (data) => {
     setSaving(true)
     try {
-      await onSave({
+      const savedItem = await onSave({
         ...data,
         id: item?.id,
         categoryId: item?.categoryId || categoryId,
         allergens: selectedAllergens,
       })
+
+      // Upload image if selected (Pro/Business only)
+      if (imageFile && canUploadPhoto && savedItem?.id) {
+        setUploadingImage(true)
+        const formData = new FormData()
+        formData.append('file', imageFile)
+        formData.append('type', 'item')
+        formData.append('itemId', savedItem.id)
+
+        const res = await fetch('/api/upload', { method: 'POST', body: formData })
+        if (res.ok) {
+          const { url } = await res.json()
+          onImageSaved(savedItem.id, url)
+        }
+        setUploadingImage(false)
+      }
+
       reset()
+      setImageFile(null)
+      setImagePreview(null)
       onClose()
     } catch {
-      // Handle error
+      // Error handled by parent
     } finally {
       setSaving(false)
     }
   }
 
+  const handleClose = () => {
+    reset()
+    setImageFile(null)
+    setImagePreview(item?.imageUrl || null)
+    onClose()
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle style={{ fontFamily: 'var(--font-playfair)' }}>
+          <DialogTitle style={{ fontFamily: 'var(--font-display)' }}>
             {item?.id ? 'Editar plato' : 'Nuevo plato'}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Image upload */}
+          <div>
+            <Label className="text-xs flex items-center gap-1">
+              Foto del plato
+              {!canUploadPhoto && (
+                <span className="ml-1 text-xs px-1.5 py-0.5 rounded font-medium flex items-center gap-1"
+                  style={{ backgroundColor: 'var(--brand-warm)', color: 'var(--brand-muted)' }}>
+                  <Lock size={10} /> Plan Pro
+                </span>
+              )}
+            </Label>
+
+            {canUploadPhoto ? (
+              <div className="mt-1">
+                {imagePreview ? (
+                  <div className="relative w-full h-36 rounded-lg overflow-hidden border" style={{ borderColor: 'var(--brand-border)' }}>
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-0.5 hover:bg-black/70"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full h-24 rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-1 text-sm transition-colors hover:border-[var(--brand-gold)]"
+                    style={{ borderColor: 'var(--brand-border)', color: 'var(--brand-muted)' }}
+                  >
+                    <ImagePlus size={20} />
+                    <span>Subir foto</span>
+                    <span className="text-xs">JPG, PNG o WebP · máx. 5MB</span>
+                  </button>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </div>
+            ) : (
+              <div
+                className="mt-1 h-16 rounded-lg border-2 border-dashed flex items-center justify-center text-xs gap-2"
+                style={{ borderColor: 'var(--brand-border)', color: 'var(--brand-muted)' }}
+              >
+                <Lock size={14} />
+                Disponible en Plan Pro y Business
+              </div>
+            )}
+          </div>
+
           {/* Name fields */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
@@ -198,6 +367,15 @@ export function ItemModal({ open, onClose, onSave, item, categoryId }: ItemModal
             </div>
           </div>
 
+          {/* Live item preview */}
+          <ItemPreview
+            name={watch('name')}
+            description={watch('description')}
+            price={watch('price')}
+            isAvailable={isAvailable}
+            imagePreview={imagePreview}
+          />
+
           {/* Allergens */}
           <div>
             <Label className="text-xs">Alérgenos</Label>
@@ -229,15 +407,15 @@ export function ItemModal({ open, onClose, onSave, item, categoryId }: ItemModal
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={handleClose}>
               Cancelar
             </Button>
             <Button
               type="submit"
-              disabled={saving}
-              style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+              disabled={saving || uploadingImage}
+              style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
             >
-              {saving ? 'Guardando...' : 'Guardar plato'}
+              {uploadingImage ? 'Subiendo foto...' : saving ? 'Guardando...' : 'Guardar plato'}
             </Button>
           </DialogFooter>
         </form>

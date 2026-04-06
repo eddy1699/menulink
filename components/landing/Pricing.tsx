@@ -5,8 +5,9 @@ import { Check } from 'lucide-react'
 const plans = [
   {
     name: 'Starter',
-    price: '39.90',
+    price: '9.90',
     desc: 'Para empezar',
+    href: '/registro',
     features: [
       'Hasta 20 platos',
       'Hasta 10 categorías',
@@ -20,8 +21,9 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: '79.90',
+    price: '19.90',
     desc: 'El más elegido',
+    href: '/registro',
     features: [
       'Hasta 80 platos',
       'Hasta 20 categorías',
@@ -38,8 +40,9 @@ const plans = [
   },
   {
     name: 'Business',
-    price: '119.90',
+    price: '29.90',
     desc: 'Para cadenas',
+    href: '/onboarding',
     features: [
       'Platos y categorías ilimitados',
       'Link + QR descargable',
@@ -66,16 +69,16 @@ const allPlansInclude = [
 
 export function Pricing() {
   return (
-    <section id="precios" className="py-20 px-4" style={{ backgroundColor: 'var(--brand-warm)' }}>
+    <section id="precios" className="py-20 px-4 bg-[#F5F5F7]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <h2
-            className="text-3xl sm:text-4xl font-bold mb-4"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            className="text-3xl sm:text-4xl font-bold mb-4 text-[#0D0D0D]"
+            style={{ fontFamily: 'var(--font-display)' }}
           >
             Precios claros, sin sorpresas
           </h2>
-          <p className="text-lg" style={{ color: 'var(--brand-muted)' }}>
+          <p className="text-lg text-[#6B7280]">
             Sin contrato de permanencia · Sin tarjeta de crédito para empezar
           </p>
         </div>
@@ -84,75 +87,65 @@ export function Pricing() {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative p-8 rounded-2xl border flex flex-col ${plan.popular ? 'shadow-xl scale-105' : ''}`}
+              className={`relative p-8 rounded-2xl border flex flex-col ${plan.popular ? 'shadow-xl scale-105' : 'shadow-[0_2px_12px_rgba(0,0,0,0.06)]'}`}
               style={{
-                backgroundColor: plan.popular ? 'var(--brand-dark)' : 'var(--brand-cream)',
-                borderColor: plan.popular ? 'var(--brand-gold)' : 'var(--brand-border)',
+                backgroundColor: plan.popular ? '#0D0D0D' : '#FFFFFF',
+                borderColor: plan.popular ? '#1B4FD8' : '#E4E4E7',
                 borderWidth: plan.popular ? '2px' : '1px',
               }}
             >
               {plan.popular && (
-                <div
-                  className="absolute -top-4 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full"
-                  style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
-                >
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-xs font-bold px-4 py-1 rounded-full bg-[#1B4FD8] text-white uppercase tracking-widest">
                   Más popular
                 </div>
               )}
+
               <div className="mb-6">
                 <div
                   className="text-xl font-bold mb-1"
                   style={{
-                    fontFamily: 'var(--font-playfair)',
-                    color: plan.popular ? 'white' : 'var(--brand-dark)',
+                    fontFamily: 'var(--font-display)',
+                    color: plan.popular ? '#fff' : '#0D0D0D',
                   }}
                 >
                   {plan.name}
                 </div>
-                <div className="text-sm mb-4" style={{ color: plan.popular ? 'rgba(255,255,255,0.7)' : 'var(--brand-muted)' }}>
+                <div className="text-sm mb-4" style={{ color: plan.popular ? '#6B7280' : '#6B7280' }}>
                   {plan.desc}
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-sm" style={{ color: plan.popular ? 'rgba(255,255,255,0.7)' : 'var(--brand-muted)' }}>
-                    S/
-                  </span>
+                  <span className="text-sm text-[#6B7280]">S/</span>
                   <span
                     className="text-4xl font-bold"
                     style={{
-                      fontFamily: 'var(--font-playfair)',
-                      color: plan.popular ? 'var(--brand-gold)' : 'var(--brand-dark)',
+                      fontFamily: 'var(--font-display)',
+                      color: plan.popular ? '#3D6FFF' : '#1B4FD8',
                     }}
                   >
                     {plan.price}
                   </span>
-                  <span className="text-sm" style={{ color: plan.popular ? 'rgba(255,255,255,0.7)' : 'var(--brand-muted)' }}>
-                    /mes
-                  </span>
+                  <span className="text-sm text-[#6B7280]">/mes</span>
                 </div>
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-2">
-                    <Check
-                      size={16}
-                      className="mt-0.5 shrink-0"
-                      style={{ color: 'var(--brand-gold)' }}
-                    />
-                    <span className="text-sm" style={{ color: plan.popular ? 'rgba(255,255,255,0.85)' : 'var(--brand-muted)' }}>
+                    <Check size={15} className="mt-0.5 shrink-0 text-[#1B4FD8]" />
+                    <span className="text-sm" style={{ color: plan.popular ? 'rgba(255,255,255,0.8)' : '#6B7280' }}>
                       {f}
                     </span>
                   </li>
                 ))}
               </ul>
 
-              <Link href="/registro">
+              <Link href={plan.href}>
                 <Button
-                  className="w-full font-semibold"
+                  className="w-full font-semibold rounded-[10px] transition-all duration-200"
                   style={
                     plan.popular
-                      ? { backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }
-                      : { backgroundColor: 'var(--brand-dark)', color: 'white' }
+                      ? { backgroundColor: '#1B4FD8', color: '#fff' }
+                      : { backgroundColor: '#EEF2FF', color: '#1B4FD8' }
                   }
                 >
                   {plan.cta}
@@ -162,22 +155,13 @@ export function Pricing() {
           ))}
         </div>
 
-        {/* All plans include */}
-        <div
-          className="p-6 rounded-2xl border text-center"
-          style={{ backgroundColor: 'var(--brand-cream)', borderColor: 'var(--brand-border)' }}
-        >
-          <h3
-            className="font-semibold mb-4"
-            style={{ color: 'var(--brand-dark)' }}
-          >
-            Todos los planes incluyen
-          </h3>
+        <div className="p-6 rounded-2xl border border-[#E4E4E7] bg-white text-center">
+          <h3 className="font-bold mb-4 text-[#0D0D0D]">Todos los planes incluyen</h3>
           <div className="flex flex-wrap justify-center gap-4">
             {allPlansInclude.map((f) => (
               <div key={f} className="flex items-center gap-2">
-                <Check size={14} style={{ color: 'var(--brand-gold)' }} />
-                <span className="text-sm" style={{ color: 'var(--brand-muted)' }}>{f}</span>
+                <Check size={14} className="text-[#1B4FD8]" />
+                <span className="text-sm text-[#6B7280]">{f}</span>
               </div>
             ))}
           </div>

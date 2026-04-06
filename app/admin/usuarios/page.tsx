@@ -23,7 +23,7 @@ export default async function AdminUsuariosPage() {
       <div>
         <h1
           className="text-2xl font-bold"
-          style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
         >
           Usuarios
         </h1>

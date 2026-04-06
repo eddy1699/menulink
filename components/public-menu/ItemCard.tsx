@@ -19,6 +19,7 @@ interface ItemCardProps {
   item: MenuItem
   lang: string
   primaryColor: string
+  fontFamily?: string
 }
 
 const allergenLabels: Record<string, Record<string, string>> = {
@@ -27,7 +28,7 @@ const allergenLabels: Record<string, Record<string, string>> = {
   pt: { gluten: 'Glúten', lacteos: 'Laticínios', mariscos: 'Frutos do mar', huevo: 'Ovo', frutos_secos: 'Nozes', soya: 'Soja' },
 }
 
-export function ItemCard({ item, lang, primaryColor }: ItemCardProps) {
+export function ItemCard({ item, lang, primaryColor, fontFamily }: ItemCardProps) {
   const getName = () => {
     if (lang === 'en' && item.nameEn) return item.nameEn
     if (lang === 'pt' && item.namePt) return item.namePt
@@ -47,7 +48,7 @@ export function ItemCard({ item, lang, primaryColor }: ItemCardProps) {
   return (
     <div
       className={`bg-white rounded-2xl border overflow-hidden ${!item.isAvailable ? 'opacity-60' : ''}`}
-      style={{ borderColor: '#f0f0f0' }}
+      style={{ borderColor: '#f0f0f0', fontFamily }}
     >
       {item.imageUrl && (
         <div className="relative h-40 overflow-hidden">
@@ -69,7 +70,7 @@ export function ItemCard({ item, lang, primaryColor }: ItemCardProps) {
       <div className="p-4">
         <div className="flex justify-between items-start gap-2">
           <div className="flex-1">
-            <h3 className="font-semibold text-sm text-gray-900">{getName()}</h3>
+            <h3 className="font-semibold text-sm text-gray-900" style={{ fontFamily }}>{getName()}</h3>
             {getDesc() && (
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">{getDesc()}</p>
             )}

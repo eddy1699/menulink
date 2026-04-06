@@ -7,6 +7,7 @@ interface MenuHeaderProps {
   district: string | null
   city: string
   primaryColor: string
+  fontFamily?: string
 }
 
 export function MenuHeader({
@@ -16,11 +17,12 @@ export function MenuHeader({
   district,
   city,
   primaryColor,
+  fontFamily,
 }: MenuHeaderProps) {
   return (
     <header
       className="px-4 pt-12 pb-8 text-center text-white"
-      style={{ backgroundColor: primaryColor }}
+      style={{ backgroundColor: primaryColor, fontFamily }}
     >
       {logoUrl && (
         <div className="flex justify-center mb-4">
@@ -37,7 +39,7 @@ export function MenuHeader({
       )}
       <h1
         className="text-2xl font-bold mb-2"
-        style={{ fontFamily: 'var(--font-playfair)' }}
+        style={{ fontFamily }}
       >
         {name}
       </h1>

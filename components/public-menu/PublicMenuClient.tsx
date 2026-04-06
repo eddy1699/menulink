@@ -7,6 +7,28 @@ import { ItemCard } from './ItemCard'
 import { LanguageSelector } from './LanguageSelector'
 import Link from 'next/link'
 
+const FONT_STACKS: Record<string, string> = {
+  inter:        'Inter, sans-serif',
+  playfair:     '"Playfair Display", serif',
+  lato:         'Lato, sans-serif',
+  merriweather: 'Merriweather, serif',
+  poppins:      'Poppins, sans-serif',
+  raleway:      'Raleway, sans-serif',
+  oswald:       'Oswald, sans-serif',
+  dancing:      '"Dancing Script", cursive',
+}
+
+const FONT_GOOGLE_URLS: Record<string, string> = {
+  inter:        'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
+  playfair:     'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap',
+  lato:         'https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap',
+  merriweather: 'https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap',
+  poppins:      'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap',
+  raleway:      'https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap',
+  oswald:       'https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap',
+  dancing:      'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap',
+}
+
 interface MenuItem {
   id: string
   name: string
@@ -38,6 +60,7 @@ interface Restaurant {
   logoUrl?: string | null
   primaryColor: string
   bgColor: string
+  fontFamily?: string
   district?: string | null
   city: string
   languages: string[]
@@ -58,6 +81,10 @@ export function PublicMenuClient({
   const [lang, setLang] = useState(initialLang)
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null)
 
+  const fontKey = restaurant.fontFamily ?? 'inter'
+  const fontStack = FONT_STACKS[fontKey] ?? FONT_STACKS.inter
+  const fontUrl = FONT_GOOGLE_URLS[fontKey]
+
   const sortedCategories = [...restaurant.categories].sort((a, b) => a.order - b.order)
 
   const filteredCategories = activeCategoryId
@@ -73,13 +100,14 @@ export function PublicMenuClient({
   return (
     <div
       className="min-h-screen"
-      style={{ backgroundColor: restaurant.bgColor }}
+      style={{ backgroundColor: restaurant.bgColor, fontFamily: fontStack }}
     >
+      {fontUrl && <link rel="stylesheet" href={fontUrl} />}
       {/* Demo banner */}
       {isDemo && (
         <div
           className="text-center text-sm py-2.5 px-4 font-medium"
-          style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+          style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
         >
           Estás viendo una demo —{' '}
           <Link href="/registro" className="underline font-semibold">
@@ -97,6 +125,7 @@ export function PublicMenuClient({
           district={restaurant.district ?? null}
           city={restaurant.city}
           primaryColor={restaurant.primaryColor}
+          fontFamily={fontStack}
         />
         {restaurant.languages.length > 1 && (
           <div className="absolute bottom-4 right-4">
@@ -116,6 +145,7 @@ export function PublicMenuClient({
         onSelect={setActiveCategoryId}
         primaryColor={restaurant.primaryColor}
         lang={lang}
+        fontFamily={fontStack}
       />
 
       {/* Menu items */}
@@ -126,7 +156,7 @@ export function PublicMenuClient({
             <section key={category.id}>
               <h2
                 className="text-lg font-bold mb-4"
-                style={{ fontFamily: 'var(--font-playfair)', color: restaurant.primaryColor }}
+                style={{ color: restaurant.primaryColor, fontFamily: fontStack }}
               >
                 {getCategoryName(category)}
               </h2>
@@ -137,6 +167,7 @@ export function PublicMenuClient({
                     item={item}
                     lang={lang}
                     primaryColor={restaurant.primaryColor}
+                    fontFamily={fontStack}
                   />
                 ))}
               </div>
@@ -147,7 +178,7 @@ export function PublicMenuClient({
 
       {/* Footer */}
       <div className="text-center py-8 text-xs" style={{ color: restaurant.primaryColor, opacity: 0.5 }}>
-        Powered by MenuQR
+        Powered by Karta
       </div>
     </div>
   )

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { generateSlug } from '@/lib/slug'
+import { sendWelcomeEmail } from '@/lib/email'
 
 const schema = z.object({
   name: z.string().min(2),
@@ -38,6 +39,8 @@ export async function POST(req: NextRequest) {
       slug = `${slug}-${Date.now()}`
     }
 
+    const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+
     // Create user and restaurant in transaction
     const user = await prisma.user.create({
       data: {
@@ -48,13 +51,18 @@ export async function POST(req: NextRequest) {
           create: {
             name: restaurantName,
             slug,
+            trialEndsAt,
           },
         },
       },
     })
 
+    // Fire and forget — no bloquea el registro
+    void sendWelcomeEmail(name, email, restaurantName)
+
     return NextResponse.json({ ok: true, userId: user.id })
-  } catch {
+  } catch (e) {
+    console.error('[registro]', e)
     return NextResponse.json({ error: 'Error al crear cuenta' }, { status: 500 })
   }
 }

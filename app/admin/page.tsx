@@ -31,7 +31,7 @@ export default async function AdminDashboard() {
     <div className="space-y-6 max-w-6xl">
       <h1
         className="text-2xl font-bold"
-        style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+        style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
       >
         Dashboard Superadmin
       </h1>
@@ -41,7 +41,7 @@ export default async function AdminDashboard() {
       <div>
         <h2
           className="text-lg font-semibold mb-4"
-          style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
         >
           Últimos restaurantes
         </h2>

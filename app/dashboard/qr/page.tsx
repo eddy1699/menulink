@@ -21,7 +21,7 @@ export default async function QRPage() {
       <div>
         <h1
           className="text-2xl font-bold"
-          style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
         >
           Tu QR Code
         </h1>
@@ -31,7 +31,7 @@ export default async function QRPage() {
       </div>
 
       <div
-        className="rounded-2xl border p-8"
+        className="rounded-2xl border p-4 sm:p-8"
         style={{ backgroundColor: 'white', borderColor: 'var(--brand-border)' }}
       >
         <QRDisplay

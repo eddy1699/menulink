@@ -44,14 +44,14 @@ export default function AjustesPage() {
     <div className="space-y-6 max-w-lg">
       <h1
         className="text-2xl font-bold"
-        style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+        style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
       >
         Ajustes
       </h1>
 
       <Card style={{ borderColor: 'var(--brand-border)' }}>
         <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>
+          <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>
             Estado de la carta
           </CardTitle>
         </CardHeader>
@@ -85,7 +85,7 @@ export default function AjustesPage() {
             className="mt-4 font-semibold"
             onClick={handleSave}
             disabled={saving}
-            style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+            style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
           >
             {saving ? 'Guardando...' : saved ? '¡Guardado!' : 'Guardar cambios'}
           </Button>
@@ -94,7 +94,7 @@ export default function AjustesPage() {
 
       <Card style={{ borderColor: 'var(--brand-border)' }}>
         <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem', color: '#dc2626' }}>
+          <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#dc2626' }}>
             Zona de peligro
           </CardTitle>
         </CardHeader>

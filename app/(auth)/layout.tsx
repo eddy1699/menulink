@@ -5,7 +5,7 @@ export default function AuthLayout({
 }) {
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4"
+      className="min-h-screen flex items-start sm:items-center justify-center px-4 py-8"
       style={{ backgroundColor: 'var(--brand-cream)' }}
     >
       {children}

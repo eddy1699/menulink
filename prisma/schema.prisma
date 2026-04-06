@@ -13,8 +13,9 @@ model User {
   password   String
   name       String
   role       Role        @default(RESTAURANT_ADMIN)
-  restaurant Restaurant?
-  createdAt  DateTime    @default(now())
+  restaurant   Restaurant?
+  resetTokens  PasswordResetToken[]
+  createdAt    DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
 
@@ -31,6 +32,7 @@ model Restaurant {
   logoUrl        String?
   primaryColor   String      @default("#C0392B")
   bgColor        String      @default("#FFF8F0")
+  fontFamily     String      @default("inter")
   phone          String?
   address        String?
   district       String?
@@ -38,12 +40,16 @@ model Restaurant {
   isActive       Boolean     @default(true)
   plan           PlanType    @default(STARTER)
   planExpiresAt  DateTime?
+  trialEndsAt    DateTime?
   onboardingPaid Boolean     @default(false)
+  onboardingStep Int         @default(0)
   languages      String[]    @default(["es"])
+  customDomain   CustomDomain?
   ownerId        String      @unique
   owner          User        @relation(fields: [ownerId], references: [id])
   categories     Category[]
   visits         Visit[]
+  transactions   PaymentTransaction[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 }
@@ -94,6 +100,15 @@ model Visit {
   createdAt    DateTime   @default(now())
 }
 
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 model OnboardingRequest {
   id             String   @id @default(cuid())
   name           String
@@ -102,5 +117,40 @@ model OnboardingRequest {
   restaurantName String
   message        String?
   status         String   @default("pending")
+  assignedTo     String?
+  notes          String?
   createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model CustomDomain {
+  id           String      @id @default(cuid())
+  domain       String      @unique
+  restaurantId String      @unique
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  status       String      @default("pending")
+  verifiedAt   DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model PaymentTransaction {
+  id             String     @id @default(cuid())
+  restaurantId   String
+  restaurant     Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  plan           PlanType
+  amount         Float
+  currency       String     @default("PEN")
+  status         TxStatus   @default(PENDING)
+  orderId        String     @unique
+  izipayTransId  String?
+  errorCode      String?
+  errorMessage   String?
+  createdAt      DateTime   @default(now())
+}
+
+enum TxStatus {
+  PENDING
+  PAID
+  FAILED
 }

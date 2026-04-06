@@ -29,7 +29,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
           <CardContent className="px-4 pb-4">
             <div
               className="text-2xl font-bold"
-              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
             >
               {stat.value}
             </div>

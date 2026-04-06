@@ -13,7 +13,7 @@ export default async function AdminRestaurantesPage() {
         <div>
           <h1
             className="text-2xl font-bold"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
           >
             Restaurantes
           </h1>

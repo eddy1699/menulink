@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { UtensilsCrossed, Eye, QrCode, TrendingUp } from 'lucide-react'
+import { UtensilsCrossed, Eye, QrCode, TrendingUp, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { PLAN_NAMES } from '@/lib/plan-limits'
@@ -16,13 +16,8 @@ export default async function DashboardPage() {
   const restaurant = await prisma.restaurant.findUnique({
     where: { ownerId: session.user.id },
     include: {
-      categories: {
-        include: { items: true },
-      },
-      visits: {
-        orderBy: { createdAt: 'desc' },
-        take: 30,
-      },
+      categories: { include: { items: true } },
+      visits: { orderBy: { createdAt: 'desc' }, take: 30 },
     },
   })
 
@@ -42,14 +37,41 @@ export default async function DashboardPage() {
   const totalVisits = restaurant.visits.length
   const menuUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${restaurant.slug}`
 
+  const wizardIncomplete = restaurant.onboardingStep < 4
+
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-4 sm:space-y-6 max-w-5xl">
+      {/* Wizard banner */}
+      {wizardIncomplete && (
+        <div
+          className="flex items-center justify-between gap-4 p-4 rounded-2xl border"
+          style={{ backgroundColor: 'var(--brand-dark)', borderColor: 'var(--brand-gold)' }}
+        >
+          <div className="flex items-center gap-3">
+            <Sparkles size={20} style={{ color: 'var(--brand-gold)' }} />
+            <div>
+              <p className="font-semibold text-sm text-white">
+                Completa la configuración inicial
+              </p>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                Paso {restaurant.onboardingStep + 1} de 4 — Tu carta no está lista aún
+              </p>
+            </div>
+          </div>
+          <Link href="/dashboard/onboarding">
+            <Button size="sm" className="shrink-0 font-semibold" style={{ backgroundColor: '#1B4FD8', color: '#fff' }}>
+              Continuar →
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1
             className="text-2xl font-bold"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
           >
             Bienvenido, {session.user.name?.split(' ')[0]}
           </h1>
@@ -59,14 +81,14 @@ export default async function DashboardPage() {
         </div>
         <Badge
           className="self-start text-sm px-3 py-1"
-          style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+          style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
         >
           Plan {PLAN_NAMES[restaurant.plan]}
         </Badge>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           { label: 'Platos', value: totalItems, sub: `${availableItems} disponibles`, icon: UtensilsCrossed },
           { label: 'Categorías', value: restaurant.categories.length, sub: 'activas', icon: UtensilsCrossed },
@@ -82,7 +104,7 @@ export default async function DashboardPage() {
             <CardContent className="px-4 pb-4">
               <div
                 className="text-2xl font-bold"
-                style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+                style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
               >
                 {stat.value}
               </div>
@@ -100,7 +122,7 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle
               className="text-base"
-              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
             >
               Acciones rápidas
             </CardTitle>
@@ -143,7 +165,7 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle
               className="text-base"
-              style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
             >
               Tu link de carta
             </CardTitle>

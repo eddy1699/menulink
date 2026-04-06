@@ -1,7 +1,14 @@
 import { PrismaClient, PlanType, Role } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
+import * as dotenv from 'dotenv'
 
-const prisma = new PrismaClient()
+dotenv.config()
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter } as any)
 
 async function main() {
   // Superadmin

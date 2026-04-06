@@ -30,7 +30,7 @@ export default async function AnaliticaPage() {
       <div className="space-y-6 max-w-2xl">
         <h1
           className="text-2xl font-bold"
-          style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
         >
           Analítica
         </h1>
@@ -41,7 +41,7 @@ export default async function AnaliticaPage() {
           <div className="text-4xl mb-4">📊</div>
           <h2
             className="text-xl font-bold mb-2"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
           >
             Analítica disponible en Plan Pro
           </h2>
@@ -49,7 +49,7 @@ export default async function AnaliticaPage() {
             Conoce cuántos clientes visitan tu carta, desde qué idioma y en qué horarios.
           </p>
           <Link href="/dashboard/plan">
-            <Button style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}>
+            <Button style={{ backgroundColor: '#1B4FD8', color: '#fff' }}>
               Actualizar a Pro →
             </Button>
           </Link>
@@ -93,7 +93,7 @@ export default async function AnaliticaPage() {
     <div className="space-y-6 max-w-4xl">
       <h1
         className="text-2xl font-bold"
-        style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+        style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
       >
         Analítica
       </h1>
@@ -110,7 +110,7 @@ export default async function AnaliticaPage() {
               <div className="text-xs mb-1" style={{ color: 'var(--brand-muted)' }}>{stat.label}</div>
               <div
                 className="text-3xl font-bold"
-                style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+                style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
               >
                 {stat.value}
               </div>
@@ -122,7 +122,7 @@ export default async function AnaliticaPage() {
       {/* Chart */}
       <Card style={{ borderColor: 'var(--brand-border)' }}>
         <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>
+          <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>
             Visitas en los últimos 30 días
           </CardTitle>
         </CardHeader>
@@ -134,7 +134,7 @@ export default async function AnaliticaPage() {
       {/* Languages */}
       <Card style={{ borderColor: 'var(--brand-border)' }}>
         <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>
+          <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>
             Idiomas
           </CardTitle>
         </CardHeader>

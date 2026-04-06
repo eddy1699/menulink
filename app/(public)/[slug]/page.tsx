@@ -70,7 +70,7 @@ export default async function MenuPage({ params, searchParams }: PageProps) {
           <div className="text-5xl mb-4">🔒</div>
           <h1
             className="text-2xl font-bold mb-2"
-            style={{ color: restaurant.primaryColor, fontFamily: 'var(--font-playfair)' }}
+            style={{ color: restaurant.primaryColor, fontFamily: 'var(--font-display)' }}
           >
             {restaurant.name}
           </h1>
@@ -97,6 +97,7 @@ export default async function MenuPage({ params, searchParams }: PageProps) {
     logoUrl: restaurant.logoUrl,
     primaryColor: restaurant.primaryColor,
     bgColor: restaurant.bgColor,
+    fontFamily: restaurant.fontFamily ?? 'inter',
     district: restaurant.district,
     city: restaurant.city,
     languages: restaurant.languages,

@@ -26,10 +26,10 @@ export default function LandingPage() {
         <div className="max-w-2xl mx-auto">
           <h2
             className="text-3xl sm:text-4xl font-bold mb-4 text-white"
-            style={{ fontFamily: 'var(--font-playfair)' }}
+            style={{ fontFamily: 'var(--font-display)' }}
           >
             Tu carta digital,{' '}
-            <span style={{ color: 'var(--brand-gold)' }}>lista antes de la cena</span>
+            <span style={{ color: '#3D6FFF' }}>lista antes de la cena</span>
           </h2>
           <p className="text-lg mb-8" style={{ color: 'rgba(255,255,255,0.7)' }}>
             Sin tarjeta de crédito · Sin permanencia · En 10 minutos
@@ -37,11 +37,7 @@ export default function LandingPage() {
           <Link href="/registro">
             <Button
               size="lg"
-              className="text-base font-semibold px-10 py-6 rounded-xl shadow-lg"
-              style={{
-                backgroundColor: 'var(--brand-gold)',
-                color: 'var(--brand-dark)',
-              }}
+              className="text-base font-semibold px-10 py-6 rounded-xl shadow-lg transition-all duration-200 bg-[#1B4FD8] hover:bg-[#3D6FFF] text-white"
             >
               Crear mi carta gratis →
             </Button>

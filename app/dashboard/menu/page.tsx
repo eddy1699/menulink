@@ -1,8 +1,8 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import { MenuEditor } from '@/components/dashboard/MenuEditor'
 import { PLAN_NAMES, getPlanLimits } from '@/lib/plan-limits'
+import { MenuEditorWithPreview } from '@/components/dashboard/MenuEditorWithPreview'
 
 export default async function MenuPage() {
   const session = await auth()
@@ -12,9 +12,7 @@ export default async function MenuPage() {
     where: { ownerId: session.user.id },
     include: {
       categories: {
-        include: {
-          items: { orderBy: { order: 'asc' } },
-        },
+        include: { items: { orderBy: { order: 'asc' } } },
         orderBy: { order: 'asc' },
       },
     },
@@ -25,13 +23,23 @@ export default async function MenuPage() {
   const limits = getPlanLimits(restaurant.plan)
   const totalItems = restaurant.categories.reduce((acc, cat) => acc + cat.items.length, 0)
 
+  const restaurantData = {
+    name: restaurant.name,
+    description: restaurant.description,
+    logoUrl: restaurant.logoUrl,
+    primaryColor: restaurant.primaryColor,
+    bgColor: restaurant.bgColor,
+    district: restaurant.district,
+    city: restaurant.city,
+  }
+
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1
             className="text-2xl font-bold"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
           >
             Mi Carta
           </h1>
@@ -52,7 +60,11 @@ export default async function MenuPage() {
         </div>
       )}
 
-      <MenuEditor categories={restaurant.categories} />
+      <MenuEditorWithPreview
+        categories={restaurant.categories}
+        plan={restaurant.plan}
+        restaurant={restaurantData}
+      />
     </div>
   )
 }

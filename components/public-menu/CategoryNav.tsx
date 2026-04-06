@@ -13,6 +13,7 @@ interface CategoryNavProps {
   onSelect: (id: string | null) => void
   primaryColor: string
   lang: string
+  fontFamily?: string
 }
 
 export function CategoryNav({
@@ -21,6 +22,7 @@ export function CategoryNav({
   onSelect,
   primaryColor,
   lang,
+  fontFamily,
 }: CategoryNavProps) {
   const getCategoryName = (cat: Category) => {
     if (lang === 'en' && cat.nameEn) return cat.nameEn
@@ -29,7 +31,7 @@ export function CategoryNav({
   }
 
   return (
-    <nav className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">
+    <nav className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm" style={{ fontFamily }}>
       <div className="flex gap-2 overflow-x-auto px-4 py-3 scrollbar-hide">
         <button
           onClick={() => onSelect(null)}

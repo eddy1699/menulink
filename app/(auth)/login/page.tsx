@@ -57,7 +57,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="w-full max-w-sm p-8 rounded-2xl shadow-lg border"
+      className="w-full max-w-sm p-5 sm:p-8 rounded-2xl shadow-lg border"
       style={{
         backgroundColor: 'white',
         borderColor: 'var(--brand-border)',
@@ -68,9 +68,9 @@ export default function LoginPage() {
         <Link href="/">
           <span
             className="text-2xl font-bold"
-            style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
           >
-            MenuQR
+            Karta
           </span>
         </Link>
         <h1
@@ -127,13 +127,19 @@ export default function LoginPage() {
           type="submit"
           className="w-full font-semibold"
           disabled={loading}
-          style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+          style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
         >
           {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
         </Button>
       </form>
 
-      <p className="text-center text-sm mt-6" style={{ color: 'var(--brand-muted)' }}>
+      <div className="text-center mt-4">
+        <Link href="/recuperar" className="text-sm" style={{ color: 'var(--brand-muted)' }}>
+          ¿Olvidaste tu contraseña?
+        </Link>
+      </div>
+
+      <p className="text-center text-sm mt-4" style={{ color: 'var(--brand-muted)' }}>
         ¿No tienes cuenta?{' '}
         <Link
           href="/registro"

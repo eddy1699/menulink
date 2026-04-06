@@ -55,7 +55,7 @@ export default function IdiomasPage() {
       <div>
         <h1
           className="text-2xl font-bold"
-          style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
         >
           Idiomas
         </h1>
@@ -66,7 +66,7 @@ export default function IdiomasPage() {
 
       <Card style={{ borderColor: 'var(--brand-border)' }}>
         <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>
+          <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>
             Idiomas disponibles
           </CardTitle>
         </CardHeader>
@@ -103,7 +103,7 @@ export default function IdiomasPage() {
         onClick={handleSave}
         disabled={saving}
         className="font-semibold"
-        style={{ backgroundColor: 'var(--brand-gold)', color: 'var(--brand-dark)' }}
+        style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
       >
         {saving ? 'Guardando...' : saved ? '¡Guardado!' : 'Guardar idiomas'}
       </Button>

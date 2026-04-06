@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/lib/auth'
+import { z } from 'zod'
+
+const updateSchema = z.object({
+  name: z.string().min(2).optional(),
+  description: z.string().optional(),
+  primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+  bgColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+  fontFamily: z.string().optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  district: z.string().optional(),
+  city: z.string().optional(),
+  isActive: z.boolean().optional(),
+  onboardingStep: z.number().optional(),
+  languages: z.array(z.string()).optional(),
+})
 
 export async function GET(
   _req: NextRequest,
@@ -8,9 +24,7 @@ export async function GET(
 ) {
   try {
     const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const { id } = await params
     const restaurant = await prisma.restaurant.findUnique({
@@ -23,12 +37,10 @@ export async function GET(
       },
     })
 
-    if (!restaurant) {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    }
-
+    if (!restaurant) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json(restaurant)
-  } catch {
+  } catch (e) {
+    console.error('[GET /restaurants/id]', e)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
@@ -39,20 +51,30 @@ export async function PUT(
 ) {
   try {
     const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const { id } = await params
     const body = await req.json()
 
+    const parsed = updateSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Datos inválidos', issues: parsed.error.issues }, { status: 400 })
+    }
+
+    // Verify ownership
+    const existing = await prisma.restaurant.findUnique({ where: { id }, select: { ownerId: true } })
+    if (!existing || existing.ownerId !== session.user.id) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+    }
+
     const restaurant = await prisma.restaurant.update({
       where: { id },
-      data: body,
+      data: parsed.data,
     })
 
     return NextResponse.json(restaurant)
-  } catch {
+  } catch (e) {
+    console.error('[PUT /restaurants/id]', e)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }

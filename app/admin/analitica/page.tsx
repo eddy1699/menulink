@@ -27,7 +27,7 @@ export default async function AdminAnaliticaPage() {
     <div className="space-y-6 max-w-5xl">
       <h1
         className="text-2xl font-bold"
-        style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+        style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
       >
         Analítica Global
       </h1>
@@ -43,7 +43,7 @@ export default async function AdminAnaliticaPage() {
               <div className="text-xs mb-1" style={{ color: 'var(--brand-muted)' }}>{stat.label}</div>
               <div
                 className="text-3xl font-bold"
-                style={{ fontFamily: 'var(--font-playfair)', color: 'var(--brand-dark)' }}
+                style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
               >
                 {stat.value}
               </div>
@@ -54,7 +54,7 @@ export default async function AdminAnaliticaPage() {
 
       <Card style={{ borderColor: 'var(--brand-border)' }}>
         <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-playfair)', fontSize: '1rem' }}>
+          <CardTitle style={{ fontFamily: 'var(--font-display)', fontSize: '1rem' }}>
             Top restaurantes por visitas
           </CardTitle>
         </CardHeader>
