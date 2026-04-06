@@ -63,7 +63,8 @@ function formatAmount(amount: number) {
 }
 
 export function PlanClient({
-  restaurantId: _restaurantId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  restaurantId,
   currentPlan,
   planExpiresAt,
   trialEndsAt,
