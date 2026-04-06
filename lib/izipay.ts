@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import { PlanType } from '@prisma/client'
 
 const MODE = process.env.IZIPAY_MODE || 'TEST'
-const API_URL = process.env.IZIPAY_API_URL || 'https://api.micuentaweb.pe'
+const API_URL = process.env.IZIPAY_API_URL!
 const USERNAME = process.env.IZIPAY_USERNAME!
 
 // Amounts in centimos (PEN)
