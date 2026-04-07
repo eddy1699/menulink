@@ -1,6 +1,7 @@
 'use client'
 
 import { signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -17,6 +18,7 @@ interface TopBarProps {
 }
 
 export function TopBar({ userName, restaurantSlug, onMenuOpen }: TopBarProps) {
+  const router = useRouter()
   const initials = userName
     ? userName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U'
@@ -76,7 +78,7 @@ export function TopBar({ userName, restaurantSlug, onMenuOpen }: TopBarProps) {
                 </a>
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem className="gap-2">
+            <DropdownMenuItem className="gap-2" onClick={() => router.push('/dashboard/ajustes')}>
               <User size={14} />
               Perfil
             </DropdownMenuItem>

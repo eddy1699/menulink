@@ -38,7 +38,7 @@ export function Sidebar({ restaurantName, onClose }: SidebarProps) {
 
   return (
     <aside
-      className="w-72 md:w-64 h-screen flex flex-col border-r"
+      className="w-72 md:w-64 h-screen md:h-full flex flex-col border-r"
       style={{ backgroundColor: 'var(--brand-dark)', borderColor: 'rgba(255,255,255,0.1)' }}
     >
       {/* Logo + close button */}
@@ -68,43 +68,44 @@ export function Sidebar({ restaurantName, onClose }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href
-          const Icon = item.icon
+      <nav className="flex-1 flex flex-col p-3 overflow-y-auto">
+        <div className="space-y-0.5">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href
+            const Icon = item.icon
 
-          return (
-            <button
-              key={item.href}
-              onClick={() => navigate(item.href)}
-              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-150 active:scale-95"
-              style={
-                isActive
-                  ? { backgroundColor: '#1B4FD8', color: '#fff' }
-                  : { color: 'rgba(255,255,255,0.7)' }
-              }
-            >
-              {isPending && _pendingHref === item.href ? (
-                <Loader2 size={18} className="animate-spin shrink-0" />
-              ) : (
-                <Icon size={18} className="shrink-0" />
-              )}
-              {item.label}
-            </button>
-          )
-        })}
+            return (
+              <button
+                key={item.href}
+                onClick={() => navigate(item.href)}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-150 active:scale-95"
+                style={
+                  isActive
+                    ? { backgroundColor: '#1B4FD8', color: '#fff' }
+                    : { color: 'rgba(255,255,255,0.7)' }
+                }
+              >
+                {isPending && _pendingHref === item.href ? (
+                  <Loader2 size={18} className="animate-spin shrink-0" />
+                ) : (
+                  <Icon size={18} className="shrink-0" />
+                )}
+                {item.label}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="mt-auto pt-4 px-1">
+          <button
+            onClick={() => { NProgress.start(); router.push('/') }}
+            className="text-xs hover:opacity-70 transition-opacity"
+            style={{ color: 'rgba(255,255,255,0.4)' }}
+          >
+            ← Volver al inicio
+          </button>
+        </div>
       </nav>
-
-      {/* Footer */}
-      <div className="p-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-        <button
-          onClick={() => { NProgress.start(); router.push('/') }}
-          className="text-xs hover:opacity-70 transition-opacity"
-          style={{ color: 'rgba(255,255,255,0.4)' }}
-        >
-          ← Volver al inicio
-        </button>
-      </div>
     </aside>
   )
 }

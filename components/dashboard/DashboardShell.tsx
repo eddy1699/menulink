@@ -39,7 +39,7 @@ export function DashboardShell({ restaurantName, restaurantSlug, userName, child
       {/* Sidebar — drawer on mobile, static on desktop */}
       <div
         className={`
-          fixed inset-y-0 left-0 z-50 md:static md:z-auto md:translate-x-0
+          fixed inset-y-0 left-0 z-50 md:static md:z-auto md:translate-x-0 md:self-stretch
           transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}

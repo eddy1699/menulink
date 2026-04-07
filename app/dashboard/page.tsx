@@ -2,10 +2,10 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { UtensilsCrossed, Eye, QrCode, TrendingUp, Sparkles } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { PLAN_NAMES } from '@/lib/plan-limits'
 import { formatDate } from '@/lib/utils'
 
@@ -120,44 +120,54 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Card className="border" style={{ borderColor: 'var(--brand-border)' }}>
           <CardHeader>
-            <CardTitle
-              className="text-base"
-              style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}
-            >
+            <CardTitle className="text-base" style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}>
               Acciones rápidas
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <Link href="/dashboard/menu">
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2"
-                style={{ borderColor: 'var(--brand-border)' }}
-              >
-                <UtensilsCrossed size={16} />
-                Editar carta
-              </Button>
-            </Link>
-            <Link href="/dashboard/qr">
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2"
-                style={{ borderColor: 'var(--brand-border)' }}
-              >
-                <QrCode size={16} />
-                Ver mi QR
-              </Button>
-            </Link>
-            <a href={menuUrl} target="_blank" rel="noopener noreferrer">
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2"
-                style={{ borderColor: 'var(--brand-border)' }}
-              >
-                <Eye size={16} />
-                Ver carta publicada
-              </Button>
-            </a>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-3">
+              <Link href="/dashboard/menu" className="block">
+                <div
+                  className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border aspect-square transition-all hover:shadow-md hover:-translate-y-0.5"
+                  style={{ borderColor: 'var(--brand-border)', backgroundColor: 'var(--brand-cream)' }}
+                >
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#EEF2FF' }}>
+                    <UtensilsCrossed size={20} style={{ color: '#1B4FD8' }} />
+                  </div>
+                  <span className="text-xs font-medium text-center leading-tight" style={{ color: 'var(--brand-dark)' }}>
+                    Editar carta
+                  </span>
+                </div>
+              </Link>
+
+              <Link href="/dashboard/qr" className="block">
+                <div
+                  className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border aspect-square transition-all hover:shadow-md hover:-translate-y-0.5"
+                  style={{ borderColor: 'var(--brand-border)', backgroundColor: 'var(--brand-cream)' }}
+                >
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#EEF2FF' }}>
+                    <QrCode size={20} style={{ color: '#1B4FD8' }} />
+                  </div>
+                  <span className="text-xs font-medium text-center leading-tight" style={{ color: 'var(--brand-dark)' }}>
+                    Ver mi QR
+                  </span>
+                </div>
+              </Link>
+
+              <a href={menuUrl} target="_blank" rel="noopener noreferrer" className="block">
+                <div
+                  className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border aspect-square transition-all hover:shadow-md hover:-translate-y-0.5"
+                  style={{ borderColor: 'var(--brand-border)', backgroundColor: 'var(--brand-cream)' }}
+                >
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#EEF2FF' }}>
+                    <Eye size={20} style={{ color: '#1B4FD8' }} />
+                  </div>
+                  <span className="text-xs font-medium text-center leading-tight" style={{ color: 'var(--brand-dark)' }}>
+                    Ver carta publicada
+                  </span>
+                </div>
+              </a>
+            </div>
           </CardContent>
         </Card>
 

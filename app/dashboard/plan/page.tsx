@@ -15,7 +15,7 @@ export default async function PlanPage() {
       planExpiresAt: true,
       trialEndsAt: true,
       transactions: {
-        where: { status: { not: 'PENDING' } },
+        where: { status: 'PAID' },
         orderBy: { createdAt: 'desc' },
         take: 10,
         select: {

@@ -1,11 +1,16 @@
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 
-const FROM = process.env.EMAIL_FROM || 'hola@menuqr.pe'
+const FROM = process.env.EMAIL_FROM || 'kartaperu@gmail.com'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
-function getResend() {
-  if (!process.env.RESEND_API_KEY) return null
-  return new Resend(process.env.RESEND_API_KEY)
+function getTransporter() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  })
 }
 
 function baseTemplate(content: string) {
@@ -24,22 +29,22 @@ function baseTemplate(content: string) {
     .body { padding: 32px; color: #1A1208; }
     .body h2 { font-size: 20px; margin-top: 0; }
     .body p { font-size: 15px; line-height: 1.6; color: #5a4a35; }
-    .btn { display: inline-block; background: #C9A96E; color: #1A1208 !important; padding: 14px 28px; border-radius: 8px; font-weight: 700; font-size: 15px; text-decoration: none; margin: 16px 0; }
+    .btn { display: inline-block; background: #1B4FD8; color: #fff !important; padding: 14px 28px; border-radius: 8px; font-weight: 700; font-size: 15px; text-decoration: none; margin: 16px 0; }
     .footer { padding: 20px 32px; border-top: 1px solid #E8E0D0; text-align: center; font-size: 12px; color: #8B7355; }
-    .highlight { background: #FAF7F2; border-left: 4px solid #C9A96E; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-weight: 600; }
+    .highlight { background: #FAF7F2; border-left: 4px solid #1B4FD8; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <div class="header">
-      <h1>MenuQR</h1>
-      <span>Carta digital para restaurantes peruanos</span>
+      <h1>Karta</h1>
+      <span>Carta digital para restaurantes</span>
     </div>
     <div class="body">
       ${content}
     </div>
     <div class="footer">
-      © 2026 MenuQR Perú · <a href="${APP_URL}" style="color:#8B7355">menuqr.pe</a>
+      © 2026 Karta · <a href="${APP_URL}" style="color:#8B7355">kartaperu.com</a>
     </div>
   </div>
 </body>
@@ -47,16 +52,14 @@ function baseTemplate(content: string) {
 }
 
 export async function sendWelcomeEmail(name: string, email: string, restaurantName: string) {
-  const resend = getResend()
-  if (!resend) return
-
-  await resend.emails.send({
-    from: `MenuQR <${FROM}>`,
+  const transporter = getTransporter()
+  await transporter.sendMail({
+    from: `Karta <${FROM}>`,
     to: email,
-    subject: `¡Bienvenido a MenuQR, ${name.split(' ')[0]}! 🎉`,
+    subject: `¡Bienvenido a Karta, ${name.split(' ')[0]}!`,
     html: baseTemplate(`
       <h2>¡Tu carta digital está lista!</h2>
-      <p>Hola <strong>${name.split(' ')[0]}</strong>, bienvenido a MenuQR.</p>
+      <p>Hola <strong>${name.split(' ')[0]}</strong>, bienvenido a Karta.</p>
       <p>Acabas de crear la cuenta de <strong>${restaurantName}</strong>. Ya puedes empezar a construir tu carta digital.</p>
       <div class="highlight">Tu restaurante: ${restaurantName}</div>
       <p>Entra al panel y agrega tus primeras categorías y platos. En menos de 10 minutos tendrás tu carta lista para compartir.</p>
@@ -69,18 +72,16 @@ export async function sendWelcomeEmail(name: string, email: string, restaurantNa
 }
 
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const resend = getResend()
-  if (!resend) return
-
+  const transporter = getTransporter()
   const resetUrl = `${APP_URL}/recuperar/${token}`
 
-  await resend.emails.send({
-    from: `MenuQR <${FROM}>`,
+  await transporter.sendMail({
+    from: `Karta <${FROM}>`,
     to: email,
-    subject: 'Recupera tu contraseña — MenuQR',
+    subject: 'Recupera tu contraseña — Karta',
     html: baseTemplate(`
       <h2>Recuperar contraseña</h2>
-      <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en MenuQR.</p>
+      <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en Karta.</p>
       <p>Haz clic en el botón para crear una nueva contraseña. El enlace expira en <strong>1 hora</strong>.</p>
       <a href="${resetUrl}" class="btn">Restablecer contraseña →</a>
       <p style="font-size:13px;color:#8B7355;">
@@ -99,19 +100,17 @@ export async function sendPlanExpiryEmail(
   plan: string,
   daysLeft: number
 ) {
-  const resend = getResend()
-  if (!resend) return
-
+  const transporter = getTransporter()
   const urgent = daysLeft <= 1
 
-  await resend.emails.send({
-    from: `MenuQR <${FROM}>`,
+  await transporter.sendMail({
+    from: `Karta <${FROM}>`,
     to: email,
     subject: urgent
-      ? `⚠️ Tu plan ${plan} vence MAÑANA — MenuQR`
-      : `Tu plan ${plan} vence en ${daysLeft} días — MenuQR`,
+      ? `Tu plan ${plan} vence MAÑANA — Karta`
+      : `Tu plan ${plan} vence en ${daysLeft} días — Karta`,
     html: baseTemplate(`
-      <h2>${urgent ? '⚠️ Último aviso' : 'Tu plan está por vencer'}</h2>
+      <h2>${urgent ? 'Último aviso' : 'Tu plan está por vencer'}</h2>
       <p>Hola <strong>${name.split(' ')[0]}</strong>,</p>
       <p>Tu plan <strong>${plan}</strong> vence ${urgent ? '<strong>mañana</strong>' : `en <strong>${daysLeft} días</strong>`}.</p>
       <p>Si no renuevas, tu carta digital quedará inactiva y tus clientes no podrán verla.</p>
@@ -130,17 +129,15 @@ export async function sendPaymentConfirmationEmail(
   amount: number,
   nextBillingDate: string
 ) {
-  const resend = getResend()
-  if (!resend) return
-
+  const transporter = getTransporter()
   const formatted = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(amount)
 
-  await resend.emails.send({
-    from: `MenuQR <${FROM}>`,
+  await transporter.sendMail({
+    from: `Karta <${FROM}>`,
     to: email,
     subject: `Pago confirmado — Plan ${plan} · ${formatted}`,
     html: baseTemplate(`
-      <h2>✅ Pago confirmado</h2>
+      <h2>Pago confirmado</h2>
       <p>Hola <strong>${name.split(' ')[0]}</strong>, recibimos tu pago correctamente.</p>
       <div class="highlight">
         Plan ${plan} · ${formatted}/mes<br/>
