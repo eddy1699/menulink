@@ -86,9 +86,11 @@ export function PlanClient({
   restaurantId,
   currentPlan,
   planExpiresAt,
-  trialEndsAt,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  trialEndsAt: _trialEndsAt,
   isInTrial,
-  trialDaysLeft,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  trialDaysLeft: _trialDaysLeft,
   planExpired,
   transactions,
 }: Props) {
