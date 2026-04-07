@@ -22,7 +22,6 @@ function calcPrice(base: number, period: Period) {
 }
 
 function perMonth(base: number, period: Period) {
-  const months = parseInt(period)
   const discount = PERIODS.find(p => p.value === period)!.discount
   return parseFloat((base * (1 - discount / 100)).toFixed(2))
 }
