@@ -44,7 +44,7 @@ function baseTemplate(content: string) {
       ${content}
     </div>
     <div class="footer">
-      © 2026 Karta · <a href="${APP_URL}" style="color:#8B7355">kartaperu.com</a>
+      © 2026 Karta · <a href="${APP_URL}" style="color:#8B7355">karta.com.pe</a>
     </div>
   </div>
 </body>
