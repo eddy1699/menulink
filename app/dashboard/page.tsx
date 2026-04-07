@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { UtensilsCrossed, Eye, QrCode, TrendingUp, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { PLAN_NAMES } from '@/lib/plan-limits'
-import { formatDate, getAppUrl } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
+import { getAppUrl } from '@/lib/server-utils'
 
 export default async function DashboardPage() {
   const session = await auth()

@@ -2,7 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { QRDisplay } from '@/components/dashboard/QRDisplay'
-import { getAppUrl } from '@/lib/utils'
+import { getAppUrl } from '@/lib/server-utils'
 
 export default async function QRPage() {
   const session = await auth()
