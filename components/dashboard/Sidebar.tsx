@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import NProgress from 'nprogress'
-import { X, Loader2, LayoutDashboard, UtensilsCrossed, Palette, QrCode, BarChart2, Globe, CreditCard, Settings, Link2 } from 'lucide-react'
+import { X, Loader2, LayoutDashboard, UtensilsCrossed, Palette, QrCode, BarChart2, Globe, CreditCard, Settings} from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
@@ -12,7 +12,6 @@ const navItems = [
   { href: '/dashboard/qr', label: 'QR Code', icon: QrCode },
   { href: '/dashboard/analitica', label: 'Analítica', icon: BarChart2 },
   { href: '/dashboard/idiomas', label: 'Idiomas', icon: Globe },
-  { href: '/dashboard/dominio', label: 'Dominio', icon: Link2 },
   { href: '/dashboard/plan', label: 'Mi Plan', icon: CreditCard },
   { href: '/dashboard/ajustes', label: 'Ajustes', icon: Settings },
 ]
