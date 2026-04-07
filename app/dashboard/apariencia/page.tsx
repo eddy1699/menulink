@@ -86,11 +86,24 @@ export default function AparienciaPage() {
       })
   }, [setValue])
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setLogoFile(file)
     setLogoPreview(URL.createObjectURL(file))
+    setLogoFile(file)
+    // Subir inmediatamente sin esperar al submit
+    setUploadingLogo(true)
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('type', 'logo')
+    const res = await fetch('/api/upload', { method: 'POST', body: formData })
+    if (res.ok) {
+      const { url } = await res.json()
+      setLogoUrl(`${url}?t=${Date.now()}`)
+      setLogoPreview(null)
+      setLogoFile(null)
+    }
+    setUploadingLogo(false)
   }
 
   const handleUploadLogo = async () => {
@@ -102,7 +115,8 @@ export default function AparienciaPage() {
     const res = await fetch('/api/upload', { method: 'POST', body: formData })
     if (res.ok) {
       const { url } = await res.json()
-      setLogoUrl(url)
+      // Agrega timestamp para evitar cache del browser
+      setLogoUrl(`${url}?t=${Date.now()}`)
       setLogoFile(null)
       setLogoPreview(null)
     }
