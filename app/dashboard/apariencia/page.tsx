@@ -161,34 +161,29 @@ export default function AparienciaPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
-              {(logoPreview || logoUrl) ? (
-                <div className="relative">
-                  <img
-                    src={logoPreview || logoUrl!}
-                    alt="Logo"
-                    className="w-24 h-24 rounded-xl object-cover border"
-                    style={{ borderColor: 'var(--brand-border)' }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => { setLogoFile(null); setLogoPreview(null); if (fileInputRef.current) fileInputRef.current.value = '' }}
-                    className="absolute -top-2 -right-2 bg-white border rounded-full p-0.5 shadow hover:bg-gray-50"
-                    style={{ borderColor: 'var(--brand-border)' }}
+              <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                {(logoPreview || logoUrl) ? (
+                  <>
+                    <img
+                      src={logoPreview || logoUrl!}
+                      alt="Logo"
+                      className="w-24 h-24 rounded-xl object-cover border"
+                      style={{ borderColor: 'var(--brand-border)' }}
+                    />
+                    <div className="absolute inset-0 rounded-xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <ImagePlus size={20} className="text-white" />
+                    </div>
+                  </>
+                ) : (
+                  <div
+                    className="w-24 h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:border-[#1B4FD8]"
+                    style={{ borderColor: 'var(--brand-border)', color: 'var(--brand-muted)' }}
                   >
-                    <X size={12} />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-24 h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:border-[var(--brand-gold)]"
-                  style={{ borderColor: 'var(--brand-border)', color: 'var(--brand-muted)' }}
-                >
-                  <ImagePlus size={20} />
-                  <span>Subir logo</span>
-                </button>
-              )}
+                    <ImagePlus size={20} />
+                    <span>Subir logo</span>
+                  </div>
+                )}
+              </div>
               <div className="text-sm" style={{ color: 'var(--brand-muted)' }}>
                 <p>JPG, PNG o WebP</p>
                 <p>Máximo 5MB</p>
