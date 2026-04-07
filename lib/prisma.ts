@@ -16,8 +16,8 @@ function createPrismaClient() {
     return new PrismaClient({ adapter })
   }
 
-  const pool = new Pool({ connectionString })
-  const adapter = new PrismaPg(pool)
+  const pool = new Pool({ connectionString, max: 1 })
+  const adapter = new PrismaPg(pool, { schema: 'public' })
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === 'development' ? ['query'] : [],
