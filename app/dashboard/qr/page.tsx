@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { QRDisplay } from '@/components/dashboard/QRDisplay'
+import { getAppUrl } from '@/lib/utils'
 
 export default async function QRPage() {
   const session = await auth()
@@ -14,7 +15,8 @@ export default async function QRPage() {
 
   if (!restaurant) redirect('/dashboard')
 
-  const menuUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${restaurant.slug}`
+  const appUrl = await getAppUrl()
+  const menuUrl = `${appUrl}/${restaurant.slug}`
 
   return (
     <div className="space-y-6 max-w-lg">

@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { UtensilsCrossed, Eye, QrCode, TrendingUp, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { PLAN_NAMES } from '@/lib/plan-limits'
-import { formatDate } from '@/lib/utils'
+import { formatDate, getAppUrl } from '@/lib/utils'
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -35,7 +35,8 @@ export default async function DashboardPage() {
     0
   )
   const totalVisits = restaurant.visits.length
-  const menuUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${restaurant.slug}`
+  const appUrl = await getAppUrl()
+  const menuUrl = `${appUrl}/${restaurant.slug}`
 
   const wizardIncomplete = restaurant.onboardingStep < 4
 
