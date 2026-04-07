@@ -10,7 +10,7 @@ export default async function QRPage() {
 
   const restaurant = await prisma.restaurant.findUnique({
     where: { ownerId: session.user.id },
-    select: { slug: true, primaryColor: true, name: true },
+    select: { slug: true, primaryColor: true, bgColor: true, name: true, logoUrl: true },
   })
 
   if (!restaurant) redirect('/dashboard')
@@ -39,7 +39,9 @@ export default async function QRPage() {
         <QRDisplay
           url={menuUrl}
           primaryColor={restaurant.primaryColor}
+          bgColor={restaurant.bgColor}
           restaurantName={restaurant.name}
+          logoUrl={restaurant.logoUrl ?? undefined}
         />
       </div>
 

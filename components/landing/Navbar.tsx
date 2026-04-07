@@ -41,9 +41,6 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/demo" className="text-sm font-semibold text-[#1B4FD8] hover:text-[#3D6FFF] transition-colors">
-              Demo
-            </Link>
           </div>
 
           {/* Desktop CTA */}
@@ -84,7 +81,6 @@ export function Navbar() {
             { label: 'Funciones',   href: '#funciones' },
             { label: 'Precios',     href: '#precios' },
             { label: 'Testimonios', href: '#testimonios' },
-            { label: 'Demo',        href: '/demo' },
           ].map((item) => (
             <Link
               key={item.label}
