@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { PublicMenuClient } from '@/components/public-menu/PublicMenuClient'
 import { cookies } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
   params: Promise<{ slug: string }>
   searchParams: Promise<{ lang?: string }>
