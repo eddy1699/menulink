@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ImagePlus, X } from 'lucide-react'
+import { ImagePlus } from 'lucide-react'
 
 const FONTS = [
   { value: 'inter',     label: 'Inter',            stack: 'Inter, sans-serif' },
