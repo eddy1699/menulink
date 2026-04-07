@@ -279,7 +279,7 @@ export function AjustesClient({ userName: initialName, userEmail, restaurant }: 
           <Button
             variant="outline"
             className="border-red-200 text-red-500 hover:bg-red-50 w-full sm:w-auto"
-            onClick={() => signOut({ callbackUrl: '/login' })}
+            onClick={() => signOut({ redirectTo: '/login' })}
           >
             Cerrar sesión
           </Button>

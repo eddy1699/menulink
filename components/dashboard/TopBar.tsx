@@ -84,7 +84,7 @@ export function TopBar({ userName, restaurantSlug, onMenuOpen }: TopBarProps) {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="gap-2 text-red-500"
-              onClick={() => signOut({ callbackUrl: '/login' })}
+              onClick={() => signOut({ redirectTo: '/login' })}
             >
               <LogOut size={14} />
               Cerrar sesión
