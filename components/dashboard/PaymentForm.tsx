@@ -97,19 +97,25 @@ export function PaymentForm({ formToken, onSuccess, onError }: Props) {
   }, [formToken])
 
   return (
-    <div className="py-2">
+    <div className="py-2 flex flex-col items-center w-full">
       {!krReady && (
         <div className="flex items-center justify-center gap-2 h-16 text-sm" style={{ color: 'var(--brand-muted)' }}>
           <Loader2 size={16} className="animate-spin" />
           Cargando pasarela de pago…
         </div>
       )}
-      {/*
-        kr-smart-form + kr-popin: Krypton renders its own Pay button.
-        Clicking it opens Izipay's modal overlay.
-        Attributes set via ref to bypass React's attribute restrictions.
-      */}
-      <div ref={divRef} className="kr-smart-form" />
+      <div className="w-full flex justify-center">
+        <div ref={divRef} className="kr-smart-form" />
+      </div>
+      <div className="flex items-center justify-center gap-2 mt-4">
+        <span className="text-xs" style={{ color: 'var(--brand-muted)' }}>Pago seguro con</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://static.micuentaweb.pe/static/js/krypton-client/V4.0/logos/footer/izipay.svg"
+          alt="Izipay"
+          className="h-6"
+        />
+      </div>
     </div>
   )
 }

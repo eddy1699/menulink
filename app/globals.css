@@ -17,6 +17,35 @@
   transform: rotate(3deg) translate(0px, -4px);
 }
 
+/* ── Izipay Krypton button override ── */
+.kr-smart-form,
+.kr-smart-form > *,
+.kr-form-content,
+.kr-popin-button-container,
+.kr-payment-button-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+.kr-payment-button,
+button.kr-payment-button {
+  display: block !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+.kr-payment-button span,
+.kr-payment-button div,
+.kr-payment-button * {
+  text-align: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
 /* ── Page transitions ── */
 @keyframes page-in {
   from { opacity: 0; transform: translateY(6px); }

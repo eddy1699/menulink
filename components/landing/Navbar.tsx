@@ -62,7 +62,7 @@ export function Navbar() {
                 size="sm"
                 className="font-semibold rounded-[10px] transition-all duration-200 bg-[#1B4FD8] hover:bg-[#3D6FFF] text-white"
               >
-                Crear menú gratis
+                Crear cuenta
               </Button>
             </Link>
           </div>
@@ -106,7 +106,7 @@ export function Navbar() {
                 className="w-full font-semibold rounded-[10px]"
                 style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
               >
-                Crear menú gratis
+                Crear cuenta
               </Button>
             </Link>
           </div>

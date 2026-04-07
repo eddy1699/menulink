@@ -146,7 +146,7 @@ export default function LoginPage() {
           className="font-semibold underline"
           style={{ color: 'var(--brand-gold)' }}
         >
-          Regístrate gratis
+          Regístrate
         </Link>
       </p>
     </div>

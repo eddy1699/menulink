@@ -39,7 +39,7 @@ export default function LandingPage() {
               size="lg"
               className="text-base font-semibold px-10 py-6 rounded-xl shadow-lg transition-all duration-200 bg-[#1B4FD8] hover:bg-[#3D6FFF] text-white"
             >
-              Crear mi carta gratis →
+              Crear mi carta →
             </Button>
           </Link>
         </div>

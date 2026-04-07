@@ -9,7 +9,7 @@ export function Hero() {
         {/* Eyebrow */}
         <div className="inline-flex items-center gap-2 mb-6">
           <span className="text-xs font-bold tracking-[2px] uppercase px-3 py-1.5 rounded-full bg-[#1B4FD8]/20 text-[#3D6FFF] border border-[#1B4FD8]/30">
-            🇵🇪 Para restaurantes en Perú
+            ¿Todavía mandas la foto del menú por WhatsApp?
           </span>
         </div>
 
@@ -25,8 +25,8 @@ export function Hero() {
 
         {/* Subtitle */}
         <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed text-[#6B7280]">
-          Digitaliza tu menú, compártelo con un QR y actualiza precios al instante.
-          Sin apps, sin complicaciones.
+          Crea la carta digital de tu restaurante en 10 minutos, compártela con un QR
+          y actualiza precios al instante. Profesional, rápido y sin complicaciones.
         </p>
 
         {/* CTAs */}
@@ -36,7 +36,7 @@ export function Hero() {
               size="lg"
               className="text-base font-semibold px-8 py-6 rounded-[10px] shadow-lg transition-all duration-200 bg-[#1B4FD8] hover:bg-[#3D6FFF] text-white"
             >
-              Empieza gratis →
+              Crear mi cuenta →
             </Button>
           </Link>
           <Link href="/demo">
@@ -53,8 +53,8 @@ export function Hero() {
         {/* Stats */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 p-6 rounded-2xl border border-white/10 bg-white/5">
           {[
-            { value: '+500 restaurantes', label: 'confían en Karta' },
-            { value: '10 min',            label: 'para publicar tu carta' },
+            { value: '+50 restaurantes',  label: 'confían en Karta' },
+            { value: 'menos de 10 min',  label: 'para publicar tu carta' },
             { value: 'Desde S/ 9.90',     label: 'por mes' },
           ].map((stat) => (
             <div key={stat.value} className="text-center">

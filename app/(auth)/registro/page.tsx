@@ -100,7 +100,7 @@ export default function RegistroPage() {
           className="text-xl font-semibold mt-4 mb-1"
           style={{ color: 'var(--brand-dark)' }}
         >
-          Crear cuenta gratis
+          Crear cuenta
         </h1>
         <p className="text-sm" style={{ color: 'var(--brand-muted)' }}>
           Tu carta digital en 10 minutos
@@ -144,7 +144,7 @@ export default function RegistroPage() {
           disabled={loading}
           style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
         >
-          {loading ? 'Creando cuenta...' : 'Crear cuenta gratis →'}
+          {loading ? 'Creando cuenta...' : 'Crear cuenta →'}
         </Button>
       </form>
 

@@ -3,14 +3,23 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { PlanType } from '@prisma/client'
-import { createFormToken, generateOrderId, getPublicKey } from '@/lib/izipay'
-
-const PERIOD_DISCOUNTS: Record<string, number> = { '1': 0, '6': 4.5, '12': 10 }
+import { generateOrderId, getPublicKey } from '@/lib/izipay'
+import { createFormTokenCustom } from '@/lib/izipay'
 
 const schema = z.object({
   plan: z.enum(['STARTER', 'PRO', 'BUSINESS']),
-  billingPeriod: z.enum(['1', '6', '12']).default('1'),
 })
+
+const PLAN_AMOUNTS_CENTS: Record<string, number> = {
+  STARTER:  990,
+  PRO:      1990,
+  BUSINESS: 2990,
+}
+const SETUP_FEE_CENTS: Record<string, number> = {
+  STARTER:  1990,  // S/ 19.90
+  PRO:      4990,  // S/ 49.90
+  BUSINESS: 7990,  // S/ 79.90
+}
 
 export async function POST(req: NextRequest) {
   const session = await auth()
@@ -20,31 +29,22 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json()
   const parsed = schema.safeParse(body)
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
-  }
+  if (!parsed.success) return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
 
-  const { plan, billingPeriod } = parsed.data
-  const months = parseInt(billingPeriod)
-  const discount = PERIOD_DISCOUNTS[billingPeriod]
+  const { plan } = parsed.data
 
   const restaurant = await prisma.restaurant.findFirst({
     where: { owner: { email: session.user.email } },
     select: { id: true },
   })
+  if (!restaurant) return NextResponse.json({ error: 'Restaurante no encontrado' }, { status: 404 })
 
-  if (!restaurant) {
-    return NextResponse.json({ error: 'Restaurante no encontrado' }, { status: 404 })
-  }
-
-  // Remove previous pending transactions to avoid duplicates in history
   await prisma.paymentTransaction.deleteMany({
     where: { restaurantId: restaurant.id, status: 'PENDING' },
   })
 
   const orderId = generateOrderId(restaurant.id)
-  const baseAmountCents = { STARTER: 990, PRO: 1990, BUSINESS: 2990 }[plan]
-  const totalCents = Math.round(baseAmountCents * months * (1 - discount / 100))
+  const totalCents = PLAN_AMOUNTS_CENTS[plan] + SETUP_FEE_CENTS[plan]
   const totalSoles = totalCents / 100
 
   await prisma.paymentTransaction.create({
@@ -53,25 +53,20 @@ export async function POST(req: NextRequest) {
       plan: plan as PlanType,
       amount: totalSoles,
       orderId,
-      billingMonths: months,
     },
   })
 
   try {
-    const formToken = await createFormToken({
+    const formToken = await createFormTokenCustom({
       orderId,
       amountCents: totalCents,
       email: session.user.email,
       restaurantId: restaurant.id,
     })
 
-    return NextResponse.json({
-      formToken,
-      publicKey: getPublicKey(),
-      orderId,
-    })
+    return NextResponse.json({ formToken, publicKey: getPublicKey(), orderId })
   } catch (e) {
-    console.error('[create-token]', e)
+    console.error('[create-token-setup]', e)
     return NextResponse.json({ error: 'Error al conectar con Izipay' }, { status: 502 })
   }
 }

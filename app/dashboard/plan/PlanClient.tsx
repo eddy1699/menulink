@@ -5,13 +5,32 @@ import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Check, X, Clock, CreditCard, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { Check, X, CreditCard, AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { PLAN_NAMES, PLAN_PRICES } from '@/lib/plan-limits'
 import { PaymentForm } from '@/components/dashboard/PaymentForm'
 
+type BillingPeriod = '1' | '6' | '12'
+
+const BILLING_PERIODS: { value: BillingPeriod; label: string; discount: number; badge?: string }[] = [
+  { value: '1',  label: 'Mensual',   discount: 0 },
+  { value: '6',  label: '6 meses',  discount: 4.5,  badge: '-4.5%' },
+  { value: '12', label: '12 meses', discount: 10,   badge: '-10%' },
+]
+
+function calcTotal(base: number, period: BillingPeriod) {
+  const months = parseInt(period)
+  const disc = BILLING_PERIODS.find(p => p.value === period)!.discount
+  return parseFloat((base * months * (1 - disc / 100)).toFixed(2))
+}
+
+function calcMonthly(base: number, period: BillingPeriod) {
+  const disc = BILLING_PERIODS.find(p => p.value === period)!.discount
+  return parseFloat((base * (1 - disc / 100)).toFixed(2))
+}
+
 const PLAN_FEATURES = {
   STARTER: [
-    'Hasta 20 platos',
+    'Hasta 25 platos, bebidas o productos',
     'Hasta 10 categorías',
     'Link + QR descargable',
     'Multiidioma ES/EN/PT',
@@ -74,6 +93,7 @@ export function PlanClient({
   transactions,
 }: Props) {
   const router = useRouter()
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('1')
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
   const [formToken, setFormToken] = useState<string | null>(null)
   const [loadingPlan, setLoadingPlan] = useState<Plan | null>(null)
@@ -88,7 +108,7 @@ export function PlanClient({
       const res = await fetch('/api/payments/create-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, billingPeriod }),
       })
       const data = await res.json()
 
@@ -138,13 +158,6 @@ export function PlanClient({
             {PLAN_NAMES[currentPlan]}
           </Badge>
 
-          {isInTrial && (
-            <div className="flex items-center gap-1 text-sm px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: 'var(--brand-warm)', color: 'var(--brand-muted)' }}>
-              <Clock size={12} />
-              Trial gratuito · {trialDaysLeft} día{trialDaysLeft !== 1 ? 's' : ''} restante{trialDaysLeft !== 1 ? 's' : ''}
-            </div>
-          )}
 
           {planExpired && !isInTrial && (
             <div className="flex items-center gap-1 text-sm px-2 py-0.5 rounded-full bg-red-50 text-red-600">
@@ -161,24 +174,6 @@ export function PlanClient({
         </div>
       </div>
 
-      {/* Trial banner */}
-      {isInTrial && (
-        <div
-          className="flex items-start gap-3 p-4 rounded-xl border"
-          style={{ backgroundColor: '#FFF9EC', borderColor: '#F0D89A' }}
-        >
-          <Clock size={18} className="mt-0.5 shrink-0" style={{ color: '#B8860B' }} />
-          <div>
-            <p className="font-semibold text-sm" style={{ color: '#7A5C00' }}>
-              Estás en tu período de prueba gratuito
-            </p>
-            <p className="text-xs mt-0.5" style={{ color: '#9A7B20' }}>
-              Te quedan <strong>{trialDaysLeft} días</strong>. Elige un plan para continuar sin interrupciones
-              {trialEndsAt ? ` después del ${formatDate(trialEndsAt)}` : ''}.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Expired banner */}
       {planExpired && !isInTrial && (
@@ -200,6 +195,43 @@ export function PlanClient({
           <p className="text-sm font-semibold text-green-700">
             ¡Pago exitoso! Tu plan {PLAN_NAMES[paymentSuccess as Plan] ?? paymentSuccess} está activo.
           </p>
+        </div>
+      )}
+
+      {/* Billing period toggle */}
+      {!selectedPlan && (
+        <div>
+          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-white border" style={{ borderColor: 'var(--brand-border)' }}>
+            {BILLING_PERIODS.map((p) => (
+              <button
+                key={p.value}
+                onClick={() => setBillingPeriod(p.value)}
+                className="relative px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                style={{
+                  backgroundColor: billingPeriod === p.value ? '#1B4FD8' : 'transparent',
+                  color: billingPeriod === p.value ? '#fff' : 'var(--brand-muted)',
+                }}
+              >
+                {p.label}
+                {p.badge && (
+                  <span
+                    className="absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-xs font-bold"
+                    style={{
+                      backgroundColor: billingPeriod === p.value ? '#22c55e' : '#dcfce7',
+                      color: billingPeriod === p.value ? '#fff' : '#16a34a',
+                    }}
+                  >
+                    {p.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+          {billingPeriod !== '1' && (
+            <p className="text-sm font-medium mt-2" style={{ color: '#16a34a' }}>
+              ✓ Pagas todo junto y ahorras un {BILLING_PERIODS.find(p => p.value === billingPeriod)!.discount}%
+            </p>
+          )}
         </div>
       )}
 
@@ -230,13 +262,32 @@ export function PlanClient({
                       </Badge>
                     )}
                   </div>
-                  <div className="flex items-baseline gap-1 mt-2">
-                    <span className="text-sm" style={{ color: 'var(--brand-muted)' }}>S/</span>
-                    <span className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}>
-                      {PLAN_PRICES[plan].toFixed(2)}
-                    </span>
-                    <span className="text-sm" style={{ color: 'var(--brand-muted)' }}>/mes</span>
-                  </div>
+                  {billingPeriod === '1' ? (
+                    <div className="flex items-baseline gap-1 mt-2">
+                      <span className="text-sm" style={{ color: 'var(--brand-muted)' }}>S/</span>
+                      <span className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}>
+                        {PLAN_PRICES[plan].toFixed(2)}
+                      </span>
+                      <span className="text-sm" style={{ color: 'var(--brand-muted)' }}>/mes</span>
+                    </div>
+                  ) : (
+                    <div className="mt-2">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-sm" style={{ color: 'var(--brand-muted)' }}>S/</span>
+                        <span className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}>
+                          {calcTotal(PLAN_PRICES[plan], billingPeriod).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs" style={{ color: 'var(--brand-muted)' }}>
+                          S/ {calcMonthly(PLAN_PRICES[plan], billingPeriod).toFixed(2)}/mes · {billingPeriod} meses
+                        </span>
+                        <span className="text-xs line-through" style={{ color: '#9CA3AF' }}>
+                          S/ {(PLAN_PRICES[plan] * parseInt(billingPeriod)).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {PLAN_FEATURES[plan].map((f) => (
@@ -276,7 +327,10 @@ export function PlanClient({
                 Pago seguro — Plan {PLAN_NAMES[selectedPlan]}
               </h2>
               <p className="text-sm mt-0.5" style={{ color: 'var(--brand-muted)' }}>
-                {formatAmount(PLAN_PRICES[selectedPlan])} / mes · Renovación manual
+                {billingPeriod === '1'
+                  ? `${formatAmount(PLAN_PRICES[selectedPlan])} / mes`
+                  : `${formatAmount(calcTotal(PLAN_PRICES[selectedPlan], billingPeriod))} · ${billingPeriod} meses (S/ ${calcMonthly(PLAN_PRICES[selectedPlan], billingPeriod).toFixed(2)}/mes)`
+                }
               </p>
             </div>
             <button

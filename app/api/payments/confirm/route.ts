@@ -44,8 +44,9 @@ export async function POST(req: NextRequest) {
   const isPaid = ['PAID', 'CAPTURED', 'ACCEPTED', 'RUNNING'].includes(orderStatus.toUpperCase())
 
   if (isPaid) {
-    const nextMonth = new Date()
-    nextMonth.setDate(nextMonth.getDate() + 30)
+    const daysToAdd = (tx.billingMonths ?? 1) * 30
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + daysToAdd)
 
     await prisma.$transaction([
       prisma.paymentTransaction.update({
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
       }),
       prisma.restaurant.update({
         where: { id: tx.restaurantId },
-        data: { plan: tx.plan as PlanType, planExpiresAt: nextMonth, trialEndsAt: null },
+        data: { plan: tx.plan as PlanType, planExpiresAt: expiresAt, trialEndsAt: null },
       }),
     ])
 

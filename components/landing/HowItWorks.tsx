@@ -4,7 +4,7 @@ const steps = [
   {
     number: '01',
     title: 'Crea tu cuenta',
-    desc: 'Regístrate gratis en menos de 2 minutos',
+    desc: 'Regístrate en menos de 2 minutos',
   },
   {
     number: '02',
@@ -78,7 +78,7 @@ export function HowItWorks() {
           <p style={{ color: 'var(--brand-muted)' }}>
             ¿No tienes tiempo?{' '}
             <Link
-              href="/registro"
+              href="/lo-hacemos-por-ti"
               className="font-semibold underline"
               style={{ color: 'var(--brand-gold)' }}
             >

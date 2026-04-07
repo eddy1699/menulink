@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -162,6 +162,25 @@ export function ItemModal({ open, onClose, onSave, onImageSaved, item, categoryI
   })
 
   const isAvailable = watch('isAvailable')
+
+  // Reset form with item data when modal opens or item changes
+  useEffect(() => {
+    if (open) {
+      reset({
+        name: item?.name || '',
+        nameEn: item?.nameEn || '',
+        namePt: item?.namePt || '',
+        description: item?.description || '',
+        descriptionEn: item?.descriptionEn || '',
+        descriptionPt: item?.descriptionPt || '',
+        price: item?.price || 0,
+        isAvailable: item?.isAvailable ?? true,
+      })
+      setSelectedAllergens(item?.allergens || [])
+      setImagePreview(item?.imageUrl || null)
+      setImageFile(null)
+    }
+  }, [open, item, reset])
 
   const toggleAllergen = (allergenId: string) => {
     setSelectedAllergens((prev) =>

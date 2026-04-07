@@ -39,14 +39,13 @@ function getAuthHeader() {
 
 interface CreateFormTokenParams {
   orderId: string
-  plan: PlanType
+  amountCents: number
   email: string
   restaurantId: string
 }
 
 export async function createFormToken(params: CreateFormTokenParams) {
-  const { orderId, plan, email, restaurantId } = params
-  const amount = PLAN_AMOUNTS[plan]
+  const { orderId, amountCents: amount, email, restaurantId } = params
 
   const res = await fetch(`${process.env.IZIPAY_API_URL}/api-payment/V4/Charge/CreatePayment`, {
     method: 'POST',
@@ -76,6 +75,45 @@ export async function createFormToken(params: CreateFormTokenParams) {
     throw new Error(data.answer?.errorMessage || 'Error al crear token de pago')
   }
 
+  return data.answer.formToken as string
+}
+
+interface CreateFormTokenCustomParams {
+  orderId: string
+  amountCents: number
+  email: string
+  restaurantId: string
+}
+
+export async function createFormTokenCustom(params: CreateFormTokenCustomParams) {
+  const { orderId, amountCents, email, restaurantId } = params
+
+  const res = await fetch(`${process.env.IZIPAY_API_URL}/api-payment/V4/Charge/CreatePayment`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: getAuthHeader(),
+    },
+    body: JSON.stringify({
+      amount: amountCents,
+      currency: 'PEN',
+      orderId,
+      customer: {
+        email,
+        reference: restaurantId,
+      },
+      transactionOptions: {
+        cardOptions: {
+          paymentSource: 'EC',
+        },
+      },
+    }),
+  })
+
+  const data = await res.json()
+  if (data.status !== 'SUCCESS') {
+    throw new Error(data.answer?.errorMessage || 'Error al crear token de pago')
+  }
   return data.answer.formToken as string
 }
 

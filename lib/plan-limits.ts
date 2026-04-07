@@ -2,7 +2,7 @@ import { PlanType } from '@prisma/client'
 
 export const PLAN_LIMITS = {
   STARTER: {
-    maxItems: 20,
+    maxItems: 25,
     maxCategories: 10,
     allowPhotos: false,
     allowAnalytics: false,

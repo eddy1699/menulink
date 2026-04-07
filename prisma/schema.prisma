@@ -146,6 +146,7 @@ model PaymentTransaction {
   izipayTransId  String?
   errorCode      String?
   errorMessage   String?
+  billingMonths  Int        @default(1)
   createdAt      DateTime   @default(now())
 }
 

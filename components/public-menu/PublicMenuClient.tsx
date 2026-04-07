@@ -111,7 +111,7 @@ export function PublicMenuClient({
         >
           Estás viendo una demo —{' '}
           <Link href="/registro" className="underline font-semibold">
-            Crea tu carta gratis →
+            Crea tu carta digital →
           </Link>
         </div>
       )}

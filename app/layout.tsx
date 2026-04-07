@@ -11,6 +11,11 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'Karta — Digitaliza la carta de tu restaurante',
   description: 'Crea la carta digital de tu restaurante en 10 minutos. Compártela con un QR. Desde S/ 9.90/mes.',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/favicon.ico',
+    apple: '/icon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
