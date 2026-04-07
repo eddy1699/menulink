@@ -34,9 +34,10 @@ export async function POST(req: NextRequest) {
 
     // Generate unique slug
     let slug = generateSlug(restaurantName)
-    const existing = await prisma.restaurant.findUnique({ where: { slug } })
-    if (existing) {
-      slug = `${slug}-${Date.now()}`
+    let counter = 2
+    while (await prisma.restaurant.findUnique({ where: { slug } })) {
+      slug = `${generateSlug(restaurantName)}-${counter}`
+      counter++
     }
 
     const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)

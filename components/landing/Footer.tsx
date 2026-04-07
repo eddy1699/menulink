@@ -42,7 +42,7 @@ export function Footer() {
               {[
                 { label: 'Privacidad', href: '#' },
                 { label: 'Términos',   href: '#' },
-                { label: 'Contacto',   href: 'mailto:hola@karta.pe' },
+                { label: 'Contacto',   href: '/contacto' },
               ].map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-sm text-white/50 hover:text-white transition-colors">

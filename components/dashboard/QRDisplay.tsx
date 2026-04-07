@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react'
 import { Button } from '@/components/ui/button'
-import { Download, Copy } from 'lucide-react'
+import { Download, Copy, Share2 } from 'lucide-react'
 
 interface QRDisplayProps {
   url: string
@@ -19,6 +19,15 @@ export function QRDisplay({ url, primaryColor, bgColor, restaurantName, logoUrl 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(url)
     alert('¡Link copiado!')
+  }
+
+  const handleShareLink = async () => {
+    if (navigator.share) {
+      await navigator.share({ title: restaurantName, text: 'Mira nuestra carta digital', url })
+    } else {
+      await navigator.clipboard.writeText(url)
+      alert('¡Link copiado! Compártelo por WhatsApp o donde quieras.')
+    }
   }
 
   const handleDownload = async () => {
@@ -183,24 +192,35 @@ export function QRDisplay({ url, primaryColor, bgColor, restaurantName, logoUrl 
       </div>
 
       {/* Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
+      <div className="flex flex-col gap-3 w-full max-w-xs">
         <Button
           onClick={handleDownload}
-          className="flex-1 gap-2 font-semibold"
+          className="w-full gap-2 font-semibold"
           style={{ backgroundColor: '#1B4FD8', color: '#fff' }}
         >
           <Download size={16} />
-          Descargar PNG
+          Descargar QR
         </Button>
-        <Button
-          variant="outline"
-          onClick={handleCopyLink}
-          className="flex-1 gap-2"
-          style={{ borderColor: 'var(--brand-border)' }}
-        >
-          <Copy size={16} />
-          Copiar link
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            onClick={handleCopyLink}
+            className="flex-1 gap-2"
+            style={{ borderColor: 'var(--brand-border)' }}
+          >
+            <Copy size={16} />
+            Copiar link
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleShareLink}
+            className="flex-1 gap-2"
+            style={{ borderColor: 'var(--brand-border)' }}
+          >
+            <Share2 size={16} />
+            Compartir
+          </Button>
+        </div>
       </div>
 
       <div

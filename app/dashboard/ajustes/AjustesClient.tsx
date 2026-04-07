@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { signOut } from 'next-auth/react'
-import { User, Building2, Lock, LogOut, Check } from 'lucide-react'
+import { User, Building2, Lock, LogOut, Check, Link } from 'lucide-react'
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 
@@ -57,12 +57,16 @@ interface Props {
 export function AjustesClient({ userName: initialName, userEmail, restaurant }: Props) {
   // Negocio
   const [restaurantName, setRestaurantName] = useState(restaurant.name)
+  const [slug, setSlug] = useState(restaurant.slug)
   const [phone, setPhone] = useState(restaurant.phone || '')
   const [address, setAddress] = useState(restaurant.address || '')
   const [district, setDistrict] = useState(restaurant.district || '')
   const [city, setCity] = useState(restaurant.city)
   const [isActive, setIsActive] = useState(restaurant.isActive)
   const negocioSave = useSave()
+
+  const cleanSlug = (val: string) =>
+    val.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '')
 
   // Usuario
   const [userName, setUserName] = useState(initialName)
@@ -79,7 +83,7 @@ export function AjustesClient({ userName: initialName, userEmail, restaurant }: 
       fetch(`/api/restaurants/${restaurant.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: restaurantName, phone, address, district, city, isActive }),
+        body: JSON.stringify({ name: restaurantName, slug, phone, address, district, city, isActive }),
       })
     )
   }
@@ -124,6 +128,24 @@ export function AjustesClient({ userName: initialName, userEmail, restaurant }: 
             <div className="space-y-1.5">
               <Label>Nombre del restaurante</Label>
               <Input value={restaurantName} onChange={(e) => setRestaurantName(e.target.value)} placeholder="Mi restaurante" />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label className="flex items-center gap-1.5"><Link size={13} /> URL de tu carta</Label>
+              <div className="flex items-center rounded-lg border overflow-hidden" style={{ borderColor: 'var(--brand-border)' }}>
+                <span className="px-3 py-2 text-sm bg-[#F5F5F7] text-[#6B7280] border-r whitespace-nowrap" style={{ borderColor: 'var(--brand-border)' }}>
+                  kartape.com/
+                </span>
+                <input
+                  className="flex-1 px-3 py-2 text-sm outline-none bg-white"
+                  value={slug}
+                  onChange={(e) => setSlug(cleanSlug(e.target.value))}
+                  placeholder="mi-restaurante"
+                  style={{ color: '#1B4FD8', fontWeight: 600 }}
+                />
+              </div>
+              <p className="text-xs" style={{ color: 'var(--brand-muted)' }}>
+                Solo letras minúsculas, números y guiones. Sin espacios.
+              </p>
             </div>
             <div className="space-y-1.5">
               <Label>Teléfono</Label>

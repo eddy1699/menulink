@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 const updateSchema = z.object({
   name: z.string().min(2).optional(),
+  slug: z.string().regex(/^[a-z0-9-]+$/, 'Solo letras minúsculas, números y guiones').min(2).max(60).optional(),
   description: z.string().optional(),
   primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
   bgColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
@@ -65,6 +66,16 @@ export async function PUT(
     const existing = await prisma.restaurant.findUnique({ where: { id }, select: { ownerId: true } })
     if (!existing || existing.ownerId !== session.user.id) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+    }
+
+    // Check slug uniqueness if changing
+    if (parsed.data.slug) {
+      const slugTaken = await prisma.restaurant.findFirst({
+        where: { slug: parsed.data.slug, NOT: { id } },
+      })
+      if (slugTaken) {
+        return NextResponse.json({ error: 'Ese link ya está en uso. Elige otro.' }, { status: 400 })
+      }
     }
 
     const restaurant = await prisma.restaurant.update({
