@@ -311,6 +311,13 @@ export default function AparienciaPage() {
                 className="p-4 text-white text-center"
                 style={{ backgroundColor: primaryColor, fontFamily: fontStack }}
               >
+                {(logoPreview || logoUrl) && (
+                  <img
+                    src={logoPreview || logoUrl!}
+                    alt="Logo"
+                    className="w-12 h-12 rounded-full object-cover mx-auto mb-2 border-2 border-white/30"
+                  />
+                )}
                 <div className="font-bold text-base">Mi Restaurante</div>
                 <div className="text-xs opacity-80 mt-0.5">Carta digital</div>
               </div>
