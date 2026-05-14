@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,8 +11,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { Zap, CheckCircle2, MailCheck, Send } from 'lucide-react'
-import Link from 'next/link'
+import { Zap, CheckCircle2, MailCheck, Send, ChevronRight } from 'lucide-react'
+import { AttachmentPicker, type Attachment } from '@/components/support/AttachmentPicker'
 
 const schema = z.object({
   subject: z.string().min(3, 'Escribe un asunto corto').max(200),
@@ -49,6 +50,7 @@ interface Props {
 export function SupportClient({ isPriority, tickets: initialTickets }: Props) {
   const router = useRouter()
   const [tickets, setTickets] = useState(initialTickets)
+  const [attachments, setAttachments] = useState<Attachment[]>([])
   const [sending, setSending] = useState(false)
   const [serverError, setServerError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -71,7 +73,7 @@ export function SupportClient({ isPriority, tickets: initialTickets }: Props) {
       const res = await fetch('/api/support/tickets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, attachments }),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -90,6 +92,7 @@ export function SupportClient({ isPriority, tickets: initialTickets }: Props) {
         ...prev,
       ])
       reset()
+      setAttachments([])
       setSuccess(true)
       router.refresh()
     } catch {
@@ -178,6 +181,12 @@ export function SupportClient({ isPriority, tickets: initialTickets }: Props) {
           )}
         </div>
 
+        <AttachmentPicker
+          value={attachments}
+          onChange={setAttachments}
+          disabled={sending}
+        />
+
         {serverError && (
           <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
             {serverError}
@@ -222,6 +231,7 @@ export function SupportClient({ isPriority, tickets: initialTickets }: Props) {
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--brand-muted)' }}>
                     Fecha
                   </th>
+                  <th className="w-8" />
                 </tr>
               </thead>
               <tbody>
@@ -230,11 +240,12 @@ export function SupportClient({ isPriority, tickets: initialTickets }: Props) {
                   return (
                     <tr
                       key={t.id}
-                      className="border-t"
+                      className="border-t cursor-pointer hover:bg-gray-50"
                       style={{
                         borderColor: 'var(--brand-border)',
                         backgroundColor: i % 2 === 0 ? '#fff' : 'var(--brand-cream)',
                       }}
+                      onClick={() => router.push(`/dashboard/soporte/${t.id}`)}
                     >
                       <td className="px-4 py-3" style={{ color: 'var(--brand-dark)' }}>
                         <div className="flex items-center gap-2">
@@ -254,6 +265,9 @@ export function SupportClient({ isPriority, tickets: initialTickets }: Props) {
                       </td>
                       <td className="px-4 py-3" style={{ color: 'var(--brand-muted)' }}>
                         {formatDate(t.createdAt)}
+                      </td>
+                      <td className="px-4 py-3 text-right" style={{ color: 'var(--brand-muted)' }}>
+                        <ChevronRight size={14} />
                       </td>
                     </tr>
                   )

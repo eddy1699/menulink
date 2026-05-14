@@ -7,9 +7,17 @@ import {
   sendSupportTicketConfirmationToCustomer,
 } from '@/lib/email'
 
+const attachmentSchema = z.object({
+  fileUrl: z.string().url(),
+  fileName: z.string().min(1).max(200),
+  fileSize: z.number().int().nonnegative(),
+  mimeType: z.string().min(1).max(120),
+})
+
 const schema = z.object({
   subject: z.string().min(3, 'Asunto muy corto').max(200),
   message: z.string().min(10, 'Cuéntanos un poco más').max(5000),
+  attachments: z.array(attachmentSchema).max(5).default([]),
 })
 
 export async function POST(req: NextRequest) {
@@ -57,22 +65,38 @@ export async function POST(req: NextRequest) {
       restaurantId: user.restaurant.id,
       email: session.user.email,
       subject: parsed.data.subject,
-      message: parsed.data.message,
       priority,
+      messages: {
+        create: {
+          senderType: 'customer',
+          senderName: user.name,
+          senderEmail: session.user.email,
+          body: parsed.data.message,
+          attachments: parsed.data.attachments.length
+            ? { create: parsed.data.attachments }
+            : undefined,
+        },
+      },
+    },
+    include: {
+      messages: {
+        include: { attachments: true },
+        orderBy: { createdAt: 'asc' },
+      },
     },
   })
 
   const emailPayload = {
     ticketId: ticket.id,
     subject: ticket.subject,
-    message: ticket.message,
+    message: parsed.data.message,
     customerEmail: session.user.email,
     customerName: user.name,
     restaurantName: user.restaurant.name,
     priority,
+    attachments: parsed.data.attachments,
   }
 
-  // Fire and forget — never block ticket creation on email
   Promise.allSettled([
     sendSupportTicketToInbox(emailPayload),
     sendSupportTicketConfirmationToCustomer(emailPayload),
@@ -97,7 +121,7 @@ export async function GET() {
 
   const tickets = await prisma.supportTicket.findMany({
     where: { restaurantId: restaurant.id },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { lastMessageAt: 'desc' },
     take: 30,
   })
   return NextResponse.json({ data: tickets })

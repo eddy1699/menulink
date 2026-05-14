@@ -124,6 +124,24 @@ export async function sendPlanExpiryEmail(
 
 const SUPPORT_INBOX = process.env.SUPPORT_INBOX || FROM
 
+interface AttachmentRef {
+  fileName: string
+  fileUrl: string
+  fileSize: number
+  mimeType: string
+}
+
+function renderAttachmentsHtml(attachments: AttachmentRef[]) {
+  if (!attachments.length) return ''
+  const items = attachments
+    .map((a) => {
+      const sizeKb = Math.round(a.fileSize / 1024)
+      return `<li style="margin:4px 0;"><a href="${a.fileUrl}" target="_blank" style="color:#1B4FD8;">${a.fileName}</a> <span style="color:#8B7355;font-size:12px;">(${sizeKb} KB)</span></li>`
+    })
+    .join('')
+  return `<p style="margin-top:16px;"><strong>Adjuntos:</strong></p><ul style="padding-left:18px;">${items}</ul>`
+}
+
 interface SupportTicketEmailParams {
   ticketId: string
   subject: string
@@ -132,12 +150,14 @@ interface SupportTicketEmailParams {
   customerName: string
   restaurantName: string
   priority: boolean
+  attachments?: AttachmentRef[]
 }
 
 export async function sendSupportTicketToInbox(params: SupportTicketEmailParams) {
   const transporter = getTransporter()
   const tag = params.priority ? '[PRIORITARIO] ' : ''
   const accentColor = params.priority ? '#dc2626' : '#1B4FD8'
+  const attachments = params.attachments ?? []
 
   await transporter.sendMail({
     from: `Karta Soporte <${FROM}>`,
@@ -153,6 +173,7 @@ export async function sendSupportTicketToInbox(params: SupportTicketEmailParams)
       </div>
       <p><strong>Asunto:</strong> ${params.subject}</p>
       <p style="white-space:pre-wrap;background:#FAF7F2;padding:16px;border-radius:8px;">${params.message}</p>
+      ${renderAttachmentsHtml(attachments)}
       ${params.priority ? '<p style="font-size:13px;color:#dc2626;font-weight:600;">⚡ Cliente con Soporte Prioritario — responder en &lt; 4h hábiles</p>' : ''}
       <a href="${APP_URL}/admin/soporte" class="btn">Ver en el panel admin →</a>
     `),
@@ -164,6 +185,7 @@ export async function sendSupportTicketConfirmationToCustomer(params: SupportTic
   const slaText = params.priority
     ? 'Como tienes <strong>Soporte Prioritario</strong> activo, te responderemos en menos de <strong>4 horas hábiles</strong>.'
     : 'Te responderemos a este correo en las próximas <strong>48 horas hábiles</strong>.'
+  const attachments = params.attachments ?? []
 
   await transporter.sendMail({
     from: `Karta <${FROM}>`,
@@ -177,8 +199,101 @@ export async function sendSupportTicketConfirmationToCustomer(params: SupportTic
         <strong>Asunto:</strong> ${params.subject}<br/>
         <strong>Ticket ID:</strong> ${params.ticketId}
       </div>
+      ${renderAttachmentsHtml(attachments)}
       <p>Te llegará la respuesta a este correo. Si quieres agregar más información, simplemente responde este email.</p>
-      <a href="${APP_URL}/dashboard/soporte" class="btn">Ver mis tickets →</a>
+      <a href="${APP_URL}/dashboard/soporte/${params.ticketId}" class="btn">Ver mi ticket →</a>
+    `),
+  })
+}
+
+interface SupportReplyEmailParams {
+  ticketId: string
+  subject: string
+  body: string
+  customerEmail: string
+  customerName: string
+  staffName: string
+  attachments?: AttachmentRef[]
+}
+
+export async function sendSupportReplyToCustomer(params: SupportReplyEmailParams) {
+  const transporter = getTransporter()
+  const attachments = params.attachments ?? []
+
+  await transporter.sendMail({
+    from: `Karta Soporte <${FROM}>`,
+    to: params.customerEmail,
+    replyTo: SUPPORT_INBOX,
+    subject: `Re: ${params.subject} — Karta`,
+    html: baseTemplate(`
+      <h2>Respuesta de Karta</h2>
+      <p>Hola <strong>${params.customerName.split(' ')[0]}</strong>,</p>
+      <p>${params.staffName} del equipo de Karta te respondió:</p>
+      <div class="highlight">${params.body.replace(/\n/g, '<br/>')}</div>
+      ${renderAttachmentsHtml(attachments)}
+      <p>Puedes responder este correo directamente o continuar la conversación en el panel.</p>
+      <a href="${APP_URL}/dashboard/soporte/${params.ticketId}" class="btn">Ver el ticket →</a>
+    `),
+  })
+}
+
+export async function sendSupportReplyToInbox(params: SupportReplyEmailParams & { restaurantName: string }) {
+  const transporter = getTransporter()
+  const attachments = params.attachments ?? []
+
+  await transporter.sendMail({
+    from: `Karta Soporte <${FROM}>`,
+    to: SUPPORT_INBOX,
+    replyTo: params.customerEmail,
+    subject: `[Respuesta cliente] ${params.subject} — ${params.restaurantName}`,
+    html: baseTemplate(`
+      <h2>El cliente respondió</h2>
+      <div class="highlight">
+        <strong>De:</strong> ${params.customerName} &lt;${params.customerEmail}&gt;<br/>
+        <strong>Restaurante:</strong> ${params.restaurantName}<br/>
+        <strong>Ticket ID:</strong> ${params.ticketId}
+      </div>
+      <p style="white-space:pre-wrap;background:#FAF7F2;padding:16px;border-radius:8px;">${params.body}</p>
+      ${renderAttachmentsHtml(attachments)}
+      <a href="${APP_URL}/admin/soporte" class="btn">Abrir el ticket →</a>
+    `),
+  })
+}
+
+interface SupportStatusEmailParams {
+  ticketId: string
+  subject: string
+  customerEmail: string
+  customerName: string
+  newStatus: 'in_progress' | 'resolved'
+}
+
+const STATUS_HEADLINE: Record<SupportStatusEmailParams['newStatus'], string> = {
+  in_progress: 'Tu ticket está en revisión',
+  resolved: 'Marcamos tu ticket como resuelto',
+}
+
+const STATUS_BODY: Record<SupportStatusEmailParams['newStatus'], string> = {
+  in_progress: 'Nuestro equipo ya está trabajando en tu solicitud. Te avisamos por correo en cuanto haya una respuesta.',
+  resolved: 'Cerramos el ticket porque entendimos que tu consulta quedó resuelta. Si necesitas seguir conversando, responde este correo o abre uno nuevo.',
+}
+
+export async function sendSupportStatusChangeEmail(params: SupportStatusEmailParams) {
+  const transporter = getTransporter()
+  await transporter.sendMail({
+    from: `Karta Soporte <${FROM}>`,
+    to: params.customerEmail,
+    replyTo: SUPPORT_INBOX,
+    subject: `${STATUS_HEADLINE[params.newStatus]} — Karta`,
+    html: baseTemplate(`
+      <h2>${STATUS_HEADLINE[params.newStatus]}</h2>
+      <p>Hola <strong>${params.customerName.split(' ')[0]}</strong>,</p>
+      <p>${STATUS_BODY[params.newStatus]}</p>
+      <div class="highlight">
+        <strong>Ticket:</strong> ${params.subject}<br/>
+        <strong>ID:</strong> ${params.ticketId}
+      </div>
+      <a href="${APP_URL}/dashboard/soporte/${params.ticketId}" class="btn">Ver ticket →</a>
     `),
   })
 }
