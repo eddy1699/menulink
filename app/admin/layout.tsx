@@ -37,6 +37,7 @@ export default async function AdminLayout({
             { href: '/admin/restaurantes', label: 'Restaurantes' },
             { href: '/admin/usuarios', label: 'Usuarios' },
             { href: '/admin/onboarding', label: 'Onboarding' },
+            { href: '/admin/soporte', label: 'Soporte' },
             { href: '/admin/dominios', label: 'Dominios' },
             { href: '/admin/publicidad', label: 'Publicidad' },
             { href: '/admin/analitica', label: 'Analítica' },

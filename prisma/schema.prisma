@@ -52,6 +52,7 @@ model Restaurant {
   transactions   PaymentTransaction[]
   servicePayments ServicePayment[]
   addOns         AddOnSubscription[]
+  supportTickets SupportTicket[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 }
@@ -245,4 +246,22 @@ model AddOnSubscription {
   updatedAt         DateTime  @updatedAt
 
   @@index([restaurantId, addOnType])
+}
+
+model SupportTicket {
+  id           String      @id @default(cuid())
+  restaurantId String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  email        String
+  subject      String
+  message      String
+  priority     Boolean     @default(false)
+  status       String      @default("open")
+  internalNote String?
+  resolvedAt   DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([status, priority, createdAt])
+  @@index([restaurantId, createdAt])
 }

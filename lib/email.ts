@@ -122,6 +122,67 @@ export async function sendPlanExpiryEmail(
   })
 }
 
+const SUPPORT_INBOX = process.env.SUPPORT_INBOX || FROM
+
+interface SupportTicketEmailParams {
+  ticketId: string
+  subject: string
+  message: string
+  customerEmail: string
+  customerName: string
+  restaurantName: string
+  priority: boolean
+}
+
+export async function sendSupportTicketToInbox(params: SupportTicketEmailParams) {
+  const transporter = getTransporter()
+  const tag = params.priority ? '[PRIORITARIO] ' : ''
+  const accentColor = params.priority ? '#dc2626' : '#1B4FD8'
+
+  await transporter.sendMail({
+    from: `Karta Soporte <${FROM}>`,
+    to: SUPPORT_INBOX,
+    replyTo: params.customerEmail,
+    subject: `${tag}${params.subject} — ${params.restaurantName}`,
+    html: baseTemplate(`
+      <h2 style="color:${accentColor};">${params.priority ? 'Ticket PRIORITARIO' : 'Nuevo ticket de soporte'}</h2>
+      <div class="highlight" style="border-left-color:${accentColor};">
+        <strong>De:</strong> ${params.customerName} &lt;${params.customerEmail}&gt;<br/>
+        <strong>Restaurante:</strong> ${params.restaurantName}<br/>
+        <strong>Ticket ID:</strong> ${params.ticketId}
+      </div>
+      <p><strong>Asunto:</strong> ${params.subject}</p>
+      <p style="white-space:pre-wrap;background:#FAF7F2;padding:16px;border-radius:8px;">${params.message}</p>
+      ${params.priority ? '<p style="font-size:13px;color:#dc2626;font-weight:600;">⚡ Cliente con Soporte Prioritario — responder en &lt; 4h hábiles</p>' : ''}
+      <a href="${APP_URL}/admin/soporte" class="btn">Ver en el panel admin →</a>
+    `),
+  })
+}
+
+export async function sendSupportTicketConfirmationToCustomer(params: SupportTicketEmailParams) {
+  const transporter = getTransporter()
+  const slaText = params.priority
+    ? 'Como tienes <strong>Soporte Prioritario</strong> activo, te responderemos en menos de <strong>4 horas hábiles</strong>.'
+    : 'Te responderemos a este correo en las próximas <strong>48 horas hábiles</strong>.'
+
+  await transporter.sendMail({
+    from: `Karta <${FROM}>`,
+    to: params.customerEmail,
+    subject: `Recibimos tu consulta — Karta`,
+    html: baseTemplate(`
+      <h2>Recibimos tu consulta</h2>
+      <p>Hola <strong>${params.customerName.split(' ')[0]}</strong>,</p>
+      <p>Tu ticket fue registrado correctamente. ${slaText}</p>
+      <div class="highlight">
+        <strong>Asunto:</strong> ${params.subject}<br/>
+        <strong>Ticket ID:</strong> ${params.ticketId}
+      </div>
+      <p>Te llegará la respuesta a este correo. Si quieres agregar más información, simplemente responde este email.</p>
+      <a href="${APP_URL}/dashboard/soporte" class="btn">Ver mis tickets →</a>
+    `),
+  })
+}
+
 export async function sendPaymentConfirmationEmail(
   email: string,
   name: string,
