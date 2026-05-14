@@ -50,6 +50,8 @@ model Restaurant {
   categories     Category[]
   visits         Visit[]
   transactions   PaymentTransaction[]
+  servicePayments ServicePayment[]
+  addOns         AddOnSubscription[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 }
@@ -120,6 +122,8 @@ model OnboardingRequest {
   status         String   @default("pending")
   assignedTo     String?
   notes          String?
+  paymentStatus  String   @default("unpaid")
+  paidOrderId    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
@@ -196,4 +200,49 @@ enum AdPlacement {
   BETWEEN_CATEGORIES
   MENU_FOOTER
   DASHBOARD_BANNER
+}
+
+enum ServiceType {
+  ONBOARDING_ASSISTED
+  PRIORITY_SUPPORT
+}
+
+enum AddOnType {
+  PRIORITY_SUPPORT
+}
+
+model ServicePayment {
+  id             String      @id @default(cuid())
+  serviceType    ServiceType
+  referenceId    String?
+  restaurantId   String?
+  restaurant     Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: SetNull)
+  email          String
+  amount         Decimal     @db.Decimal(10, 2)
+  orderId        String      @unique
+  izipayTransId  String?
+  status         TxStatus    @default(PENDING)
+  errorCode      String?
+  errorMessage   String?
+  paidAt         DateTime?
+  createdAt      DateTime    @default(now())
+
+  @@index([serviceType, status])
+  @@index([referenceId])
+}
+
+model AddOnSubscription {
+  id                String    @id @default(cuid())
+  restaurantId      String
+  restaurant        Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  addOnType         AddOnType
+  monthlyPriceCents Int
+  status            String    @default("pending_payment")
+  startedAt         DateTime?
+  currentPeriodEnd  DateTime?
+  cancelledAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([restaurantId, addOnType])
 }

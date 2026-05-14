@@ -14,6 +14,7 @@ interface Props {
   formToken: string
   onSuccess: (plan: string) => void
   onError: (msg: string) => void
+  confirmEndpoint?: string
 }
 
 function waitForKR(maxMs = 15000): Promise<boolean> {
@@ -27,7 +28,12 @@ function waitForKR(maxMs = 15000): Promise<boolean> {
   })
 }
 
-export function PaymentForm({ formToken, onSuccess, onError }: Props) {
+export function PaymentForm({
+  formToken,
+  onSuccess,
+  onError,
+  confirmEndpoint = '/api/payments/confirm',
+}: Props) {
   const divRef = useRef<HTMLDivElement>(null)
   const [krReady, setKrReady] = useState(false)
 
@@ -57,7 +63,7 @@ export function PaymentForm({ formToken, onSuccess, onError }: Props) {
             typeof clientAnswer === 'string' ? clientAnswer : JSON.stringify(clientAnswer)
 
           try {
-            const res = await fetch('/api/payments/confirm', {
+            const res = await fetch(confirmEndpoint, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ clientAnswer: clientAnswerJson, hash }),
@@ -87,7 +93,7 @@ export function PaymentForm({ formToken, onSuccess, onError }: Props) {
 
     init()
     return () => { mounted = false }
-  }, [formToken, onSuccess, onError])
+  }, [formToken, onSuccess, onError, confirmEndpoint])
 
   // Set kr-form-token and kr-popin via DOM ref (React strips unknown attributes)
   useEffect(() => {

@@ -129,3 +129,40 @@ export function verifySignature(clientAnswerJson: string, hash: string): boolean
 export function generateOrderId(restaurantId: string): string {
   return `MENUQR-${restaurantId.slice(-8).toUpperCase()}-${Date.now()}`
 }
+
+export function generateServiceOrderId(prefix: string): string {
+  const id = Math.random().toString(36).slice(2, 10).toUpperCase()
+  return `MENUQR-${prefix}-${id}-${Date.now()}`
+}
+
+interface CreateServiceFormTokenParams {
+  orderId: string
+  amountCents: number
+  email: string
+  reference: string
+}
+
+export async function createServiceFormToken(params: CreateServiceFormTokenParams) {
+  const { orderId, amountCents, email, reference } = params
+
+  const res = await fetch(`${process.env.IZIPAY_API_URL}/api-payment/V4/Charge/CreatePayment`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: getAuthHeader(),
+    },
+    body: JSON.stringify({
+      amount: amountCents,
+      currency: 'PEN',
+      orderId,
+      customer: { email, reference },
+      transactionOptions: { cardOptions: { paymentSource: 'EC' } },
+    }),
+  })
+
+  const data = await res.json()
+  if (data.status !== 'SUCCESS') {
+    throw new Error(data.answer?.errorMessage || 'Error al crear token de pago')
+  }
+  return data.answer.formToken as string
+}

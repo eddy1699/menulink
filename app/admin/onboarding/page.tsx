@@ -24,6 +24,8 @@ interface OnboardingRequest {
   status: string
   assignedTo: string | null
   notes: string | null
+  paymentStatus: string
+  paidOrderId: string | null
   createdAt: string
 }
 
@@ -106,6 +108,7 @@ export default function AdminOnboardingPage() {
                 <TableHead>Restaurante</TableHead>
                 <TableHead>Asignado a</TableHead>
                 <TableHead>Estado</TableHead>
+                <TableHead>Pago</TableHead>
                 <TableHead>Fecha</TableHead>
                 <TableHead className="w-16"></TableHead>
               </TableRow>
@@ -141,6 +144,17 @@ export default function AdminOnboardingPage() {
                       <Badge style={{ backgroundColor: s.bg, color: s.color }}>
                         {s.label}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {req.paymentStatus === 'paid' ? (
+                        <Badge style={{ backgroundColor: '#dcfce7', color: '#166534' }}>
+                          Pagado · S/ 120
+                        </Badge>
+                      ) : (
+                        <Badge style={{ backgroundColor: '#f3f4f6', color: '#6b7280' }}>
+                          Sin pago
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell className="text-sm" style={{ color: 'var(--brand-muted)' }}>
                       {formatDate(req.createdAt)}

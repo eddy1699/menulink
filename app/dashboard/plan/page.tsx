@@ -27,10 +27,17 @@ export default async function PlanPage() {
           createdAt: true,
         },
       },
+      addOns: {
+        where: { addOnType: 'PRIORITY_SUPPORT' },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      },
     },
   })
 
   if (!restaurant) redirect('/dashboard')
+
+  const prioritySupport = restaurant.addOns[0] ?? null
 
   const now = new Date()
   const isInTrial = restaurant.trialEndsAt && restaurant.trialEndsAt > now
@@ -55,6 +62,15 @@ export default async function PlanPage() {
         plan: t.plan as string,
         status: t.status as string,
       }))}
+      prioritySupport={
+        prioritySupport
+          ? {
+              status: prioritySupport.status,
+              currentPeriodEnd: prioritySupport.currentPeriodEnd?.toISOString() ?? null,
+              monthlyPriceCents: prioritySupport.monthlyPriceCents,
+            }
+          : null
+      }
     />
   )
 }

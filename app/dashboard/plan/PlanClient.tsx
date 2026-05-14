@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Check, X, CreditCard, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { Check, X, CreditCard, AlertTriangle, CheckCircle2, MessageCircle } from 'lucide-react'
 import { PLAN_NAMES, PLAN_PRICES } from '@/lib/plan-limits'
 import { PaymentForm } from '@/components/dashboard/PaymentForm'
 
@@ -62,6 +62,12 @@ interface Transaction {
   createdAt: string
 }
 
+interface PrioritySupportInfo {
+  status: string
+  currentPeriodEnd: string | null
+  monthlyPriceCents: number
+}
+
 interface Props {
   restaurantId: string
   currentPlan: Plan
@@ -71,6 +77,7 @@ interface Props {
   trialDaysLeft: number
   planExpired: boolean
   transactions: Transaction[]
+  prioritySupport: PrioritySupportInfo | null
 }
 
 function formatDate(iso: string) {
@@ -93,6 +100,7 @@ export function PlanClient({
   trialDaysLeft: _trialDaysLeft,
   planExpired,
   transactions,
+  prioritySupport,
 }: Props) {
   const router = useRouter()
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('1')
@@ -101,6 +109,38 @@ export function PlanClient({
   const [loadingPlan, setLoadingPlan] = useState<Plan | null>(null)
   const [paymentError, setPaymentError] = useState<string | null>(null)
   const [paymentSuccess, setPaymentSuccess] = useState<string | null>(null)
+  const [supportToken, setSupportToken] = useState<string | null>(null)
+  const [supportLoading, setSupportLoading] = useState(false)
+  const [supportError, setSupportError] = useState<string | null>(null)
+
+  const subscribePrioritySupport = useCallback(async () => {
+    setSupportLoading(true)
+    setSupportError(null)
+    try {
+      const res = await fetch('/api/addons/priority-support/subscribe', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok || !data.formToken) {
+        setSupportError(data.error || 'No se pudo iniciar el pago')
+        return
+      }
+      setSupportToken(data.formToken)
+    } catch {
+      setSupportError('Error de conexión. Intenta nuevamente.')
+    } finally {
+      setSupportLoading(false)
+    }
+  }, [])
+
+  const cancelPrioritySupport = useCallback(async () => {
+    if (!confirm('¿Cancelar Soporte Prioritario? Seguirás teniéndolo hasta el fin del periodo pagado.')) return
+    const res = await fetch('/api/addons/priority-support/cancel', { method: 'POST' })
+    if (res.ok) router.refresh()
+  }, [router])
+
+  const handleSupportSuccess = useCallback(() => {
+    setSupportToken(null)
+    router.refresh()
+  }, [router])
 
   const handleSelectPlan = async (plan: Plan) => {
     setLoadingPlan(plan)
@@ -366,6 +406,116 @@ export function PlanClient({
       {paymentError && !selectedPlan && (
         <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
           {paymentError}
+        </div>
+      )}
+
+      {/* Priority Support Add-On */}
+      {!selectedPlan && !formToken && (
+        <div
+          className="rounded-2xl border p-5"
+          style={{ borderColor: 'var(--brand-border)', backgroundColor: 'white' }}
+        >
+          <div className="flex items-start gap-4">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{ backgroundColor: '#dcfce7' }}
+            >
+              <MessageCircle size={20} className="text-green-700" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <h3 className="font-semibold text-base" style={{ color: 'var(--brand-dark)' }}>
+                  Soporte Prioritario WhatsApp
+                </h3>
+                {prioritySupport?.status === 'active' && (
+                  <Badge style={{ backgroundColor: '#dcfce7', color: '#166534' }} className="text-xs">
+                    Activo
+                  </Badge>
+                )}
+                {prioritySupport?.status === 'cancelled' && (
+                  <Badge style={{ backgroundColor: '#fef3c7', color: '#92400e' }} className="text-xs">
+                    Cancelado
+                  </Badge>
+                )}
+              </div>
+              <p className="text-sm mb-3" style={{ color: 'var(--brand-muted)' }}>
+                Línea directa con el equipo. Respuesta &lt; 2h en horario laboral. S/ 19.90/mes.
+              </p>
+
+              {prioritySupport?.status === 'active' && prioritySupport.currentPeriodEnd && (
+                <p className="text-xs mb-3" style={{ color: 'var(--brand-muted)' }}>
+                  Próxima renovación: {formatDate(prioritySupport.currentPeriodEnd)}
+                </p>
+              )}
+              {prioritySupport?.status === 'cancelled' && prioritySupport.currentPeriodEnd && (
+                <p className="text-xs mb-3" style={{ color: 'var(--brand-muted)' }}>
+                  Acceso vigente hasta: {formatDate(prioritySupport.currentPeriodEnd)}
+                </p>
+              )}
+
+              {supportError && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-3">
+                  {supportError}
+                </div>
+              )}
+
+              {!prioritySupport || prioritySupport.status !== 'active' ? (
+                <Button
+                  onClick={subscribePrioritySupport}
+                  disabled={supportLoading}
+                  className="text-sm"
+                  style={{ backgroundColor: '#16a34a', color: '#fff' }}
+                >
+                  <CreditCard size={14} className="mr-1.5" />
+                  {supportLoading ? 'Cargando…' : 'Activar S/ 19.90/mes'}
+                </Button>
+              ) : (
+                <Button
+                  onClick={cancelPrioritySupport}
+                  variant="outline"
+                  className="text-sm"
+                  style={{ borderColor: 'var(--brand-border)' }}
+                >
+                  Cancelar suscripción
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Priority support payment form */}
+      {supportToken && (
+        <div
+          className="rounded-2xl border p-6 space-y-4"
+          style={{ borderColor: 'var(--brand-border)', backgroundColor: 'var(--brand-cream)' }}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-dark)' }}>
+                Pago seguro — Soporte Prioritario
+              </h2>
+              <p className="text-sm mt-0.5" style={{ color: 'var(--brand-muted)' }}>
+                S/ 19.90 · Primer mes
+              </p>
+            </div>
+            <button
+              onClick={() => { setSupportToken(null); setSupportError(null) }}
+              className="text-sm flex items-center gap-1 hover:opacity-70"
+              style={{ color: 'var(--brand-muted)' }}
+            >
+              <X size={14} /> Cancelar
+            </button>
+          </div>
+          <PaymentForm
+            formToken={supportToken}
+            onSuccess={handleSupportSuccess}
+            onError={(msg) => setSupportError(msg)}
+            confirmEndpoint="/api/addons/priority-support/confirm"
+          />
+          <p className="text-xs text-center" style={{ color: 'var(--brand-muted)' }}>
+            La renovación mensual automática no está habilitada todavía — te avisaremos cuando se acerque el fin del periodo.
+          </p>
         </div>
       )}
 
