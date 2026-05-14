@@ -61,7 +61,10 @@ export default async function MenuPage() {
       )}
 
       <MenuEditorWithPreview
-        categories={restaurant.categories}
+        categories={restaurant.categories.map((cat) => ({
+          ...cat,
+          items: cat.items.map((item) => ({ ...item, price: Number(item.price) })),
+        }))}
         plan={restaurant.plan}
         restaurant={restaurantData}
       />

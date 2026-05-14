@@ -117,7 +117,7 @@ export default async function MenuPage({ params, searchParams }: PageProps) {
         description: item.description,
         descriptionEn: item.descriptionEn,
         descriptionPt: item.descriptionPt,
-        price: item.price,
+        price: Number(item.price),
         imageUrl: item.imageUrl,
         isAvailable: item.isAvailable,
         allergens: item.allergens,

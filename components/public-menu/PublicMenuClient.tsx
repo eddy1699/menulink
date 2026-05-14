@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MenuHeader } from './MenuHeader'
 import { CategoryNav } from './CategoryNav'
 import { ItemCard } from './ItemCard'
 import { LanguageSelector } from './LanguageSelector'
+import { AdBanner } from '@/components/ads/AdBanner'
+import { PoweredByMenuQR } from '@/components/ads/PoweredByMenuQR'
 import Link from 'next/link'
 
 const FONT_STACKS: Record<string, string> = {
@@ -80,6 +82,22 @@ export function PublicMenuClient({
 }: PublicMenuClientProps) {
   const [lang, setLang] = useState(initialLang)
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null)
+  const [visitSource, setVisitSource] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('source') === 'qr') {
+      setVisitSource('qr')
+      return
+    }
+    const ref = document.referrer
+    if (ref && !ref.includes(window.location.host)) {
+      setVisitSource('link')
+      return
+    }
+    setVisitSource('direct')
+  }, [])
 
   const fontKey = restaurant.fontFamily ?? 'inter'
   const fontStack = FONT_STACKS[fontKey] ?? FONT_STACKS.inter
@@ -150,36 +168,54 @@ export function PublicMenuClient({
 
       {/* Menu items */}
       <div className="px-4 py-6 max-w-2xl mx-auto space-y-8">
-        {filteredCategories.map((category) => {
+        {filteredCategories.map((category, index) => {
           const sortedItems = [...category.items].sort((a, b) => a.order - b.order)
+          const showAdAfter = !isDemo && index > 0 && index % 2 === 0
           return (
-            <section key={category.id}>
-              <h2
-                className="text-lg font-bold mb-4"
-                style={{ color: restaurant.primaryColor, fontFamily: fontStack }}
-              >
-                {getCategoryName(category)}
-              </h2>
-              <div className="space-y-3">
-                {sortedItems.map((item) => (
-                  <ItemCard
-                    key={item.id}
-                    item={item}
-                    lang={lang}
-                    primaryColor={restaurant.primaryColor}
-                    fontFamily={fontStack}
-                  />
-                ))}
-              </div>
-            </section>
+            <div key={category.id}>
+              {showAdAfter && (
+                <AdBanner
+                  placement="BETWEEN_CATEGORIES"
+                  restaurantId={restaurant.id}
+                  source={visitSource}
+                  language={lang}
+                />
+              )}
+              <section>
+                <h2
+                  className="text-lg font-bold mb-4"
+                  style={{ color: restaurant.primaryColor, fontFamily: fontStack }}
+                >
+                  {getCategoryName(category)}
+                </h2>
+                <div className="space-y-3">
+                  {sortedItems.map((item) => (
+                    <ItemCard
+                      key={item.id}
+                      item={item}
+                      lang={lang}
+                      primaryColor={restaurant.primaryColor}
+                      fontFamily={fontStack}
+                    />
+                  ))}
+                </div>
+              </section>
+            </div>
           )
         })}
+
+        {!isDemo && (
+          <AdBanner
+            placement="MENU_FOOTER"
+            restaurantId={restaurant.id}
+            source={visitSource}
+            language={lang}
+          />
+        )}
       </div>
 
-      {/* Footer */}
-      <div className="text-center py-8 text-xs" style={{ color: restaurant.primaryColor, opacity: 0.5 }}>
-        Powered by Karta
-      </div>
+      {/* Branding fijo, no removible */}
+      <PoweredByMenuQR accentColor={restaurant.primaryColor} />
     </div>
   )
 }

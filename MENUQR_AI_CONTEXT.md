@@ -1,0 +1,1006 @@
+---
+document_type: ai_product_context
+product_name: MenuQR Perú
+language: es-PE
+country: PE
+last_updated: 2026-05-12
+version: 1.0.0
+intended_use:
+  - marketing_copy_generation
+  - chatbot_grounding
+  - support_responses
+  - documentation_authoring
+  - sales_enablement
+source_documents:
+  - MENUQR_SPEC.md (v1.0 — Abril 2026)
+  - CLAUDE.md (instrucciones de implementación)
+---
+
+# MenuQR Perú — AI Product Context
+
+> Documento machine-readable. Única fuente de verdad para agentes de IA que generen contenido sobre MenuQR.
+> Reglas: no inventar features, montos ni endpoints. Si falta dato, ver `unknowns_to_clarify`.
+
+---
+
+## 1. PRODUCT_IDENTITY [FACT]
+
+```yaml
+name: MenuQR
+full_name: MenuQR Perú
+tagline: "Tu carta digital, lista en 10 minutos"
+one_liner: "Plataforma SaaS multitenant que permite a restaurantes peruanos digitalizar su carta, compartirla mediante link único o código QR, y gestionarla en tiempo real."
+category: SaaS B2B (HoReCa / Restaurantes)
+business_model: subscription_monthly
+country: Perú
+primary_city: Lima
+primary_language: es
+supported_languages: [es, en, pt]
+domain_suggested: menuqr.pe
+public_menu_url_pattern: "https://menuqr.pe/{slug}"
+current_status: TBD
+launch_date: TBD
+```
+
+---
+
+## 2. GLOSSARY [FACT]
+
+```yaml
+terms:
+  - term: slug
+    definition: "Identificador único del restaurante en la URL pública (ej. 'cevicheria-limena' en menuqr.pe/cevicheria-limena). Auto-generado del nombre, sin tildes, en minúsculas."
+  - term: restaurant_admin
+    definition: "Rol del dueño/administrador del restaurante. Gestiona su propio menú, apariencia y configuración. No accede a otros restaurantes."
+  - term: superadmin
+    definition: "Administrador global de la plataforma MenuQR. Gestiona todos los restaurantes, usuarios, planes y facturación."
+  - term: viewer
+    definition: "Cliente final que escanea el QR o visita el link. Solo lectura, sin login."
+  - term: Agotado
+    definition: "Estado de un plato cuando isAvailable=false. Visible en tiempo real para el cliente final con badge rojo."
+  - term: onboarding_asistido
+    definition: "Servicio pagado (S/ 120 único) en el que MenuQR carga el menú completo, fotos, categorías y configuración por el cliente."
+  - term: leche_de_tigre
+    definition: "Jugo cítrico/marino característico del ceviche peruano. Aparece como plato en el seed (S/ 15.00)."
+```
+
+---
+
+## 3. PROBLEM_STATEMENT [FACT]
+
+```yaml
+context: "Restaurantes peruanos (independientes y cadenas pequeñas) carecen de una solución barata, rápida y bonita para tener una carta digital actualizable."
+pains:
+  - id: P1
+    pain: "Imprimir cartas físicas cada vez que cambian precios o platos genera costo y demora."
+  - id: P2
+    pain: "Las cartas en PDF o imagen no permiten marcar platos agotados en tiempo real."
+  - id: P3
+    pain: "Soluciones internacionales no manejan soles (S/) ni el contexto peruano (distritos, modismos, platos típicos)."
+  - id: P4
+    pain: "Los restaurantes no tienen forma de saber cuánta gente está mirando su carta digital."
+  - id: P5
+    pain: "Restaurantes con clientela extranjera (turismo en Miraflores, Cusco, etc.) necesitan multiidioma sin contratar traductores."
+  - id: P6
+    pain: "Dueños de restaurante no son técnicos: cualquier solución que requiera apps, plugins o configuración compleja es rechazada."
+  - id: P7
+    pain: "Cargar el menú inicial (fotos, descripciones, traducciones) toma horas que el dueño no tiene."
+```
+
+---
+
+## 4. TARGET_PERSONAS [FACT]
+
+```yaml
+personas:
+  - id: PER1
+    label: "Dueño de cevichería en Miraflores"
+    role: restaurant_admin
+    demographics:
+      age_range: "35–55"
+      location: "Lima Metropolitana (Miraflores, Surco, San Isidro, Barranco)"
+      tech_savviness: "media-baja"
+    goals:
+      - "Tener una carta bonita y profesional sin pagar a un diseñador."
+      - "Actualizar precios y disponibilidad sin reimprimir."
+      - "Verse moderno frente a turistas y comensales jóvenes."
+    objections:
+      - "¿Esto cuesta mucho?"
+      - "¿Mis clientes necesitan descargar una app?"
+      - "Yo no sé de computadoras."
+    preferred_channels: [WhatsApp, Facebook, Instagram, "referidos boca a boca"]
+
+  - id: PER2
+    label: "Administradora de pollería/anticuchería de barrio"
+    role: restaurant_admin
+    demographics:
+      age_range: "28–45"
+      location: "Lima Sur/Norte, ciudades intermedias (Huaral, Chiclayo, Arequipa)"
+      tech_savviness: "media"
+    goals:
+      - "Reducir costo de impresión de cartas."
+      - "Marcar 'agotado' al momento sin que el mozo tenga que avisar."
+      - "Tener QR en cada mesa."
+    objections:
+      - "¿Y si se cae internet en mi local?"
+      - "¿Puedo cambiarlo yo misma desde el celular?"
+    preferred_channels: [WhatsApp, Facebook, TikTok]
+
+  - id: PER3
+    label: "Comensal final (viewer)"
+    role: viewer
+    demographics:
+      age_range: "18–65"
+      location: "Perú + turistas internacionales"
+      tech_savviness: "variable"
+    goals:
+      - "Ver la carta rápido sin descargar nada."
+      - "Saber qué hay disponible y a qué precio."
+      - "Ver fotos antes de pedir (en restaurantes con plan Pro+)."
+    objections:
+      - "No quiero crear una cuenta."
+      - "No quiero esperar a que cargue."
+    preferred_channels: [QR_en_mesa, link_compartido_por_WhatsApp]
+
+  - id: PER4
+    label: "Superadmin de MenuQR (interno)"
+    role: superadmin
+    demographics:
+      location: "Equipo MenuQR Perú"
+    goals:
+      - "Gestionar todos los restaurantes y planes."
+      - "Procesar solicitudes de onboarding asistido."
+      - "Ver métricas globales de la plataforma."
+```
+
+---
+
+## 5. VALUE_PROPOSITIONS [FACT]
+
+```yaml
+by_audience:
+  restaurant_owner:
+    headline: "Tu carta digital, lista en 10 minutos"
+    bullets:
+      - "Digitaliza tu menú, compártelo con un QR y actualiza precios al instante."
+      - "Sin apps, sin complicaciones, sin contrato de permanencia."
+      - "Desde S/ 39.90/mes."
+      - "Multiidioma ES / EN / PT incluido en todos los planes."
+      - "Modo 'Agotado' en tiempo real."
+      - "Colores personalizados y logo de tu restaurante."
+
+  diner_viewer:
+    headline: "Escanea, mira, pide."
+    bullets:
+      - "Sin descargar apps."
+      - "Sin crear cuenta."
+      - "En tu idioma."
+
+  internal_team:
+    headline: "Multitenant, multimoneda-PEN, multiidioma."
+    bullets:
+      - "Stack Next.js 14 + Prisma + PostgreSQL (Supabase) sobre Vercel."
+      - "Roles RESTAURANT_ADMIN y SUPERADMIN."
+      - "Tracking de visitas con source (qr/link/direct) y language."
+```
+
+---
+
+## 6. FEATURES_DETAILED [FACT]
+
+> Solo features declaradas en MENUQR_SPEC.md. Nada inventado.
+
+```yaml
+menu_management:
+  - id: F1
+    feature: "Categorías con drag & drop para reordenar"
+    plan_availability: [STARTER, PRO, BUSINESS]
+    tech: "@dnd-kit/core"
+  - id: F2
+    feature: "Platos con nombre, descripción, precio en S/, alérgenos, estado activo/agotado"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F3
+    feature: "Toggle rápido de disponibilidad por plato sin abrir editor"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F4
+    feature: "Alérgenos: Gluten, Lácteos, Mariscos, Huevo, Frutos secos, Soya"
+    plan_availability: [STARTER, PRO, BUSINESS]
+
+branding_and_appearance:
+  - id: F5
+    feature: "Logo del restaurante (PNG/JPG, max 2MB)"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F6
+    feature: "Color principal y color de fondo del menú (color picker + hex)"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F7
+    feature: "Vista previa en tiempo real del menú"
+    plan_availability: [STARTER, PRO, BUSINESS]
+
+qr_and_link:
+  - id: F8
+    feature: "URL pública única: menuqr.pe/{slug}"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F9
+    feature: "QR generado dinámicamente con color = primaryColor del restaurante"
+    plan_availability: [STARTER, PRO, BUSINESS]
+    tech: "qrcode.react"
+  - id: F10
+    feature: "Descarga de QR en PNG y SVG"
+    plan_availability: [STARTER, PRO, BUSINESS]
+
+photos:
+  - id: F11
+    feature: "Foto por plato (upload → conversión WebP → Supabase Storage)"
+    plan_availability: [PRO, BUSINESS]
+    storage_path: "restaurantes/{restaurantId}/items/{itemId}.webp"
+    max_size_mb: 2
+    accepted_types: [image/jpeg, image/png, image/webp]
+    recommended_dimensions: "800x600px mínimo"
+
+i18n:
+  - id: F12
+    feature: "Multiidioma ES / EN / PT en el menú público"
+    plan_availability: [STARTER, PRO, BUSINESS]
+    tech: "next-intl"
+  - id: F13
+    feature: "Traducciones por campo (nombre restaurante, descripción, categorías, platos)"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F14
+    feature: "Detección automática del idioma del navegador del visitante"
+    plan_availability: [STARTER, PRO, BUSINESS]
+
+analytics:
+  - id: F15
+    feature: "Visitas hoy / semana / mes + gráfico 30 días"
+    plan_availability: [PRO, BUSINESS]
+    tech: "Recharts"
+  - id: F16
+    feature: "Origen de visitas: QR vs Link vs Directo (donut)"
+    plan_availability: [PRO, BUSINESS]
+  - id: F17
+    feature: "Idioma más usado por visitantes"
+    plan_availability: [PRO, BUSINESS]
+  - id: F18
+    feature: "Top 5 platos más vistos"
+    plan_availability: [PRO, BUSINESS]
+    notes: "BUSINESS = analytics 'full'; PRO = analytics 'basic'"
+
+availability_state:
+  - id: F19
+    feature: "Modo 'Agotado' en tiempo real (badge rojo en menú público)"
+    plan_availability: [STARTER, PRO, BUSINESS]
+
+public_menu:
+  - id: F20
+    feature: "Menú público sin login en /[slug]"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F21
+    feature: "Registro asíncrono de visita (no bloquea render)"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F22
+    feature: "Meta tags OG para compartir en redes sociales"
+    plan_availability: [STARTER, PRO, BUSINESS]
+  - id: F23
+    feature: "Página /[slug] con restaurante inactivo → 'Este restaurante pausó su carta'"
+    plan_availability: [STARTER, PRO, BUSINESS]
+
+demo:
+  - id: F24
+    feature: "Demo pública en /demo con datos hardcodeados de 'La Cevichería Limeña'"
+    plan_availability: public
+    notes: "NO consulta la BD. Mismos componentes que /[slug]."
+
+multi_branch:
+  - id: F25
+    feature: "Soporte multi-sucursales"
+    plan_availability: [BUSINESS]
+    notes: "STARTER y PRO limitados a 1 sucursal."
+
+multi_menu:
+  - id: F26
+    feature: "Múltiples menús por restaurante"
+    plan_availability_by_plan:
+      STARTER: 1
+      PRO: 3
+      BUSINESS: Infinity
+
+superadmin_panel:
+  - id: F27
+    feature: "Dashboard global con métricas, distribución de planes, últimos registros"
+    role_required: SUPERADMIN
+  - id: F28
+    feature: "Gestión de restaurantes: ver, editar, activar/desactivar, cambiar plan, extender vencimiento"
+    role_required: SUPERADMIN
+  - id: F29
+    feature: "Gestión de solicitudes de onboarding asistido (estado: pending | in_progress | done)"
+    role_required: SUPERADMIN
+  - id: F30
+    feature: "Analítica global: visitas por día, top 10 restaurantes, crecimiento, distribución geográfica"
+    role_required: SUPERADMIN
+```
+
+---
+
+## 7. MONETIZATION_AND_BONUSES [FACT]
+
+```yaml
+model: subscription_monthly + one_time_service
+currency: PEN
+currency_symbol: "S/"
+plans:
+  - id: STARTER
+    price_monthly_pen: 39.90
+  - id: PRO
+    price_monthly_pen: 79.90
+  - id: BUSINESS
+    price_monthly_pen: 119.90
+  - id: ENTERPRISE
+    price_monthly_pen: null
+    note: "A consultar — sin precio publicado"
+
+onboarding_assisted_service:
+  one_time_price_pen: 120.00
+  proration: "Prorrateado en 3 meses del plan elegido (~S/ 40/mes extra)"
+  includes:
+    - "Carga completa del menú"
+    - "Fotos"
+    - "Categorías"
+    - "Configuración visual"
+
+referrals_or_bonuses: TBD
+discounts_or_promos: TBD
+free_trial: TBD
+contract_lock_in: "Ninguno — 'sin contrato de permanencia'"
+payment_methods: TBD
+billing_provider: TBD
+```
+
+---
+
+## 8. PRICING_DEFAULTS [FACT]
+
+```yaml
+plan_limits:
+  STARTER:
+    monthly_pen: 39.90
+    max_items: 20
+    max_categories: 10
+    allow_photos: false
+    allow_analytics: false
+    max_menus: 1
+    max_branches: 1
+  PRO:
+    monthly_pen: 79.90
+    max_items: 80
+    max_categories: 20
+    allow_photos: true
+    max_photos: 80
+    allow_analytics: true
+    analytics_level: basic
+    max_menus: 3
+    max_branches: 1
+  BUSINESS:
+    monthly_pen: 119.90
+    max_items: Infinity
+    max_categories: Infinity
+    allow_photos: true
+    max_photos: Infinity
+    allow_analytics: true
+    analytics_level: full
+    max_menus: Infinity
+    max_branches: Infinity
+included_in_all_plans:
+  - "Link público único + QR descargable (PNG y SVG)"
+  - "Colores personalizados y logo del restaurante"
+  - "Multiidioma ES / EN / PT"
+  - "Modo 'Agotado' en tiempo real"
+  - "Sin contrato de permanencia"
+```
+
+---
+
+## 9. TECH_STACK [FACT]
+
+```yaml
+frontend:
+  framework: Next.js 14 (App Router)
+  language: TypeScript (estricto, sin any)
+  styling: Tailwind CSS
+  ui_components: shadcn/ui
+  icons: Lucide React
+  forms: React Hook Form + Zod
+  state_management: Zustand
+  qr_generation: qrcode.react
+  drag_and_drop: "@dnd-kit/core"
+  i18n: next-intl
+  charts: Recharts
+  fonts:
+    headings: Playfair Display (Google Fonts)
+    body_ui: DM Sans (Google Fonts)
+
+backend:
+  api: Next.js API Routes
+  api_alternative: FastAPI (opcional)
+  database: PostgreSQL (Supabase)
+  orm: Prisma
+  auth: NextAuth.js v5 (credentials + JWT)
+  image_storage: Supabase Storage o Cloudinary
+  email: Resend
+
+infrastructure:
+  hosting: Vercel
+  db_hosting: Supabase
+
+data_models:
+  - User (id, email, password [bcrypt], name, role, restaurant?, timestamps)
+  - Restaurant (id, slug, name, description?, logoUrl?, primaryColor, bgColor, phone?, address?, district?, city, isActive, plan, planExpiresAt?, onboardingPaid, languages[], ownerId, timestamps)
+  - Category (id, name, nameEn?, namePt?, order, restaurantId, timestamps)
+  - MenuItem (id, name, nameEn?, namePt?, description?, descriptionEn?, descriptionPt?, price, imageUrl?, isAvailable, order, categoryId, allergens[], timestamps)
+  - Visit (id, restaurantId, source?, language?, createdAt)
+  - OnboardingRequest (id, name, email, phone, restaurantName, message?, status, createdAt)
+enums:
+  Role: [SUPERADMIN, RESTAURANT_ADMIN]
+  PlanType: [STARTER, PRO, BUSINESS]
+```
+
+---
+
+## 10. ROUTES [FACT]
+
+```yaml
+public:
+  - path: /
+    purpose: "Landing page pública"
+  - path: /demo
+    purpose: "Demo interactiva con datos de 'La Cevichería Limeña' (sin BD)"
+  - path: /planes
+    purpose: "Página de precios"
+  - path: /login
+    purpose: "Login (restaurant_admin y superadmin)"
+  - path: /registro
+    purpose: "Registro de nuevo restaurante"
+  - path: /onboarding
+    purpose: "Formulario 'lo hacemos por ti'"
+  - path: "/[slug]"
+    purpose: "Menú público del restaurante (viewer, sin auth)"
+    query_params:
+      lang: "es | en | pt"
+      source: "qr"
+
+restaurant_admin:
+  - path: /dashboard
+    purpose: "Resumen / Dashboard"
+  - path: /dashboard/menu
+    purpose: "Gestión de categorías y platos"
+  - path: /dashboard/apariencia
+    purpose: "Logo, colores, nombre, descripción"
+  - path: /dashboard/qr
+    purpose: "Ver link + descargar QR"
+  - path: /dashboard/analitica
+    purpose: "Estadísticas (solo Pro+)"
+  - path: /dashboard/idiomas
+    purpose: "Activar/desactivar idiomas y traducciones"
+  - path: /dashboard/plan
+    purpose: "Plan actual, upgrade, facturación"
+  - path: /dashboard/ajustes
+    purpose: "Datos restaurante, contraseña, slug, eliminar cuenta"
+
+superadmin:
+  - path: /admin
+    purpose: "Dashboard superadmin"
+  - path: /admin/restaurantes
+    purpose: "Lista de todos los restaurantes"
+  - path: "/admin/restaurantes/[id]"
+    purpose: "Detalle y edición"
+  - path: /admin/usuarios
+    purpose: "Gestión de usuarios"
+  - path: /admin/onboarding
+    purpose: "Solicitudes de onboarding asistido"
+  - path: /admin/planes
+    purpose: "Configuración de planes y precios"
+  - path: /admin/analitica
+    purpose: "Métricas globales"
+```
+
+---
+
+## 11. API_ENDPOINTS [FACT]
+
+> Endpoints listados en CLAUDE.md. No se infieren métodos HTTP (TBD).
+
+```yaml
+endpoints:
+  - path: /api/auth/[...nextauth]
+    purpose: "NextAuth handlers"
+    method: TBD
+  - path: /api/restaurants
+    purpose: "Lista/crea restaurantes"
+    method: TBD
+  - path: /api/restaurants/[id]
+    purpose: "CRUD por id de restaurante"
+    method: TBD
+  - path: /api/menu/categories
+    purpose: "CRUD de categorías del menú"
+    method: TBD
+  - path: /api/menu/items
+    purpose: "CRUD de platos"
+    method: TBD
+  - path: /api/upload
+    purpose: "Subida de imágenes (foto de plato → Supabase Storage)"
+    method: TBD
+  - path: /api/visits
+    purpose: "Registro asíncrono de visita al menú público"
+    method: TBD
+  - path: /api/admin/restaurants
+    purpose: "Endpoints admin sobre restaurantes"
+    method: TBD
+  - path: /api/admin/stats
+    purpose: "Métricas globales para superadmin"
+    method: TBD
+```
+
+---
+
+## 12. BUSINESS_RULES [FACT]
+
+```yaml
+rules:
+  - id: BR1
+    rule: "El slug se auto-genera del nombre del restaurante: minúsculas, sin tildes, espacios → guiones. Si existe colisión, sufijo numérico ('la-cevicheria-limena-2')."
+  - id: BR2
+    rule: "Moneda siempre en S/ (PEN). Formatear con Intl.NumberFormat('es-PE', {style:'currency', currency:'PEN'})."
+  - id: BR3
+    rule: "Las fotos solo se permiten en plan PRO y BUSINESS. En STARTER, intentar subir foto debe mostrar modal de upgrade."
+  - id: BR4
+    rule: "Las fotos se convierten a WebP al subir y se guardan en 'restaurantes/{restaurantId}/items/{itemId}.webp'."
+  - id: BR5
+    rule: "Validación de upload: tipos image/jpeg, image/png, image/webp; tamaño máximo 2MB."
+  - id: BR6
+    rule: "Los límites de plan se evalúan en Server Action ANTES de crear plato o subir foto."
+  - id: BR7
+    rule: "El menú público sigue visible cuando el plan vence; el admin ve banner de renovación."
+  - id: BR8
+    rule: "Restaurante con isActive=false → menú público muestra 'Este restaurante pausó su carta' + CTA a landing."
+  - id: BR9
+    rule: "Slug inexistente → 404 'Esta carta no existe' + CTA a landing."
+  - id: BR10
+    rule: "Las visitas se registran fire & forget: nunca bloquean el render del menú."
+  - id: BR11
+    rule: "Source de visita: '?source=qr' → 'qr'; referrer externo → 'link'; sin referrer → 'direct'."
+  - id: BR12
+    rule: "Detección de idioma del visitante: navegador → primer idioma activo del restaurante como fallback."
+  - id: BR13
+    rule: "Middleware: /dashboard/* requiere RESTAURANT_ADMIN o SUPERADMIN; /admin/* solo SUPERADMIN; /login y /registro redirigen si ya autenticado; /[slug] y /demo siempre públicos."
+  - id: BR14
+    rule: "La /demo NO consulta la BD: usa datos hardcodeados de 'La Cevichería Limeña'."
+  - id: BR15
+    rule: "El QR del restaurante usa color = restaurant.primaryColor."
+  - id: BR16
+    rule: "Color principal y color de fondo del menú vienen de restaurant.primaryColor y restaurant.bgColor."
+  - id: BR17
+    rule: "Los idiomas activos del restaurante están en restaurant.languages (array, default ['es'])."
+  - id: BR18
+    rule: "Onboarding asistido (S/ 120) se prorratea en 3 meses (~S/ 40/mes adicionales)."
+  - id: BR19
+    rule: "Validación con Zod en todos los formularios y API routes. TypeScript estricto: prohibido 'any'."
+  - id: BR20
+    rule: "Server Components por defecto; Client Components solo cuando hay interactividad/hooks."
+```
+
+---
+
+## 13. COMPLIANCE [FACT]
+
+```yaml
+country: Perú
+known_constraints: TBD
+notes:
+  - "No hay menciones explícitas en MENUQR_SPEC.md de INDECOPI, Ley 29571 (Código de Consumo), Ley 29733 (Protección de Datos Personales), facturación SUNAT u otros. Verificar con legal antes de afirmar cumplimiento."
+suggested_review_areas:
+  - "Términos de servicio y política de privacidad (Ley 29733)"
+  - "Mención de alérgenos en menú (buena práctica sanitaria)"
+  - "Facturación electrónica para suscripciones (SUNAT) — TBD"
+```
+
+---
+
+## 14. BRAND_IDENTITY [FACT]
+
+```yaml
+system_palette:
+  brand_dark: "#1A1208"
+  brand_gold: "#C9A96E"
+  brand_cream: "#FAF7F2"
+  brand_warm: "#F5EFE3"
+  brand_border: "#E8E0D0"
+  brand_muted: "#8B7355"
+typography:
+  headings: "Playfair Display (serif, Google Fonts)"
+  body_ui: "DM Sans (sans-serif, Google Fonts)"
+logo_concept: "Logotipo 'MenuQR' con acento dorado (brand_gold)."
+voice_and_tone:
+  primary_voice: "Directo, cercano, práctico, ligeramente cálido — tono peruano cotidiano."
+  formality: "Tuteo/usted neutral. Frases cortas. Sin tecnicismos."
+  language_register: "es-PE"
+example_phrases_from_spec:
+  - "Tu carta digital, lista en 10 minutos."
+  - "Digitaliza tu menú, compártelo con un QR y actualiza precios al instante."
+  - "Sin apps, sin complicaciones."
+  - "Sin tarjeta de crédito · Sin permanencia · En 10 minutos"
+  - "¿No tienes tiempo? Lo hacemos nosotros →"
+  - "Tu carta digital, lista antes de la cena"
+demo_restaurant_palette:
+  primary: "#1B4F72"
+  bg: "#EAF4FB"
+```
+
+---
+
+## 15. CONTENT_LEXICON [GUIDANCE]
+
+```yaml
+preferred_words:
+  - "carta" (preferir sobre "menú" cuando suena natural en es-PE; ambos válidos)
+  - "platos" (no "items" en copy hacia clientes finales)
+  - "S/" (símbolo de soles peruanos, NO "PEN" en copy de marketing)
+  - "restaurante" (no "comercio" ni "establecimiento")
+  - "agotado" (no "no disponible" ni "out of stock")
+  - "QR" (mayúsculas siempre)
+  - "MenuQR" (camelcase, una sola palabra)
+  - "Perú" (con tilde)
+  - "lo hacemos por ti" (frase oficial del onboarding asistido)
+  - "en 10 minutos" (claim repetido en landing)
+
+words_to_avoid:
+  - "menú" cuando puede sonar forzado (preferir "carta")
+  - "soles" en lugar de "S/" en precios mostrados
+  - "PEN" en copy de marketing (uso técnico/dev solamente)
+  - "free trial" / "prueba gratis" — el spec NO declara free trial
+  - "garantizado" o promesas sin respaldo
+  - "el mejor del Perú" / superlativos sin evidencia
+  - "barato" (preferir "desde S/ 39.90/mes")
+  - "app" en sentido de "aplicación móvil" — el producto NO es una app
+  - "instalar" — no hay nada que instalar
+  - tecnicismos: "SaaS", "multitenant", "PostgreSQL", "Prisma" hacia el cliente final
+
+mandatory_disclaimers: []
+disclaimers_recommended:
+  - "Si se menciona precio: indicar 'desde S/ 39.90/mes' o el precio exacto del plan."
+  - "Si se promete tiempo: usar '10 minutos' (consistente con landing)."
+  - "Si se menciona free trial, descuento, referral: NO inventar — el spec no los declara."
+
+regional_terms_es_PE:
+  - "leche de tigre"
+  - "chicha morada"
+  - "Inca Kola"
+  - "anticucho"
+  - "ceviche"
+  - "tiradito"
+  - "causa limeña"
+  - "suspiro a la limeña"
+  - "mazamorra morada"
+  - "picarones"
+  - "pollería"
+  - "chicharronería"
+  - "cevichería"
+  - "distrito" (división administrativa de Lima)
+```
+
+---
+
+## 16. CUSTOMER_JOURNEYS [FACT]
+
+```yaml
+journeys:
+  - id: J1
+    name: "Onboarding self-service del dueño de restaurante"
+    actor: PER1 o PER2
+    steps:
+      - "Llega a la landing menuqr.pe desde anuncio/referido."
+      - "Click 'Ver demo' → /demo (Cevichería Limeña hardcodeada)."
+      - "Convencido, click 'Crear menú gratis' → /registro."
+      - "Crea cuenta (email + contraseña + nombre + nombre del restaurante)."
+      - "Redirigido a /dashboard."
+      - "Va a /dashboard/apariencia → sube logo, define colores, descripción."
+      - "Va a /dashboard/menu → crea categorías → agrega platos con precio en S/."
+      - "Va a /dashboard/qr → descarga QR en PNG/SVG → lo imprime y pega en mesas."
+      - "Verifica su menú público en menuqr.pe/{slug}."
+      - "Si tiene plan PRO+, sube fotos y revisa /dashboard/analitica."
+
+  - id: J2
+    name: "Comensal escanea QR en el restaurante"
+    actor: PER3
+    steps:
+      - "Se sienta en mesa, ve QR impreso."
+      - "Abre cámara del celular, escanea → menuqr.pe/{slug}?source=qr."
+      - "Carga el menú sin login ni app."
+      - "Sistema detecta idioma del navegador (si está en idiomas activos del restaurante)."
+      - "Visita registrada async en tabla Visit (source='qr', language)."
+      - "Navega categorías horizontalmente, ve platos, fotos (si plan PRO+), precios S/."
+      - "Ve badge 'Agotado' en platos no disponibles."
+      - "Llama al mozo y ordena."
+
+  - id: J3
+    name: "Onboarding asistido (lo hacemos por ti)"
+    actor: PER1
+    steps:
+      - "En la landing/sección 'Cómo funciona' click 'Lo hacemos nosotros →'."
+      - "Llena formulario /onboarding (name, email, phone, restaurantName, message)."
+      - "Solicitud queda en OnboardingRequest con status='pending'."
+      - "Superadmin la ve en /admin/onboarding."
+      - "Equipo contacta, cobra S/ 120 (prorrateado 3 meses)."
+      - "Equipo crea el restaurante manualmente y carga menú/fotos/colores."
+      - "Status pasa a 'in_progress' → 'done'."
+      - "Cliente recibe acceso al dashboard con todo listo."
+
+  - id: J4
+    name: "Superadmin gestiona plataforma"
+    actor: PER4
+    steps:
+      - "Login en /login con credenciales superadmin."
+      - "Redirigido a /admin."
+      - "Revisa métricas: total restaurantes activos, nuevos del mes, ingresos estimados."
+      - "Va a /admin/restaurantes para filtrar/buscar."
+      - "Si necesario, abre /admin/restaurantes/[id] para cambiar plan, extender vencimiento, activar/desactivar."
+      - "Procesa solicitudes en /admin/onboarding."
+```
+
+---
+
+## 17. METRICS_TO_TRACK [GUIDANCE]
+
+```yaml
+restaurant_level:
+  - visits_today
+  - visits_this_week
+  - visits_this_month
+  - visits_by_source: [qr, link, direct]
+  - visits_by_language: [es, en, pt]
+  - top_5_items_viewed
+  - active_items_count
+  - categories_count
+  - plan_expires_in_days
+
+platform_level_superadmin:
+  - total_active_restaurants
+  - new_signups_this_month
+  - estimated_mrr_pen: "Suma de planes activos"
+  - plan_distribution: "% Starter / Pro / Business"
+  - last_5_signups
+  - pending_onboarding_requests
+  - total_visits_per_day_30d
+  - top_10_restaurants_by_visits
+  - signup_growth_by_month
+  - geographic_distribution_by_city
+
+product_kpis_suggested:
+  - activation_rate: "% de signups que publican menú en <24h"
+  - time_to_first_publish_minutes: "Validar claim '10 minutos'"
+  - upgrade_rate_starter_to_pro
+  - churn_rate_monthly
+  - onboarding_assisted_conversion_rate
+```
+
+---
+
+## 18. MARKETING_ANGLES [POSITIONING]
+
+```yaml
+campaigns:
+  - id: A1
+    angle: "Velocidad — 10 minutos"
+    hook: "Tu carta digital, lista en 10 minutos."
+    target_persona: [PER1, PER2]
+    supporting_facts: ["Spec declara claim '10 minutos' en hero y CTA final."]
+    channels: [Facebook, Instagram, WhatsApp]
+
+  - id: A2
+    angle: "Precio en soles, hecho para Perú"
+    hook: "Desde S/ 39.90/mes. Sin contrato. Sin tarjeta de crédito."
+    target_persona: [PER1, PER2]
+    supporting_facts: ["Precio STARTER S/ 39.90/mes confirmado en spec.", "Spec declara 'sin contrato de permanencia'."]
+    channels: [Landing, Facebook]
+
+  - id: A3
+    angle: "Modo Agotado en tiempo real"
+    hook: "Marca un plato como agotado y tus clientes lo ven al instante."
+    target_persona: [PER1, PER2]
+    supporting_facts: ["isAvailable=false en MenuItem render badge rojo."]
+    channels: [Demo /demo, Landing sección Funciones]
+
+  - id: A4
+    angle: "Para turistas — tu carta en 3 idiomas"
+    hook: "ES, EN y PT incluidos en todos los planes."
+    target_persona: [PER1]
+    supporting_facts: ["Multiidioma ES/EN/PT en todos los planes según spec sección 5."]
+    channels: [Landing, segmentación geográfica Miraflores/Cusco]
+
+  - id: A5
+    angle: "Lo hacemos por ti — onboarding asistido"
+    hook: "¿No tienes tiempo? Por S/ 120 cargamos todo tu menú, fotos y colores."
+    target_persona: [PER1]
+    supporting_facts: ["Servicio onboarding asistido S/ 120, prorrateable, según spec sección 5."]
+    channels: [WhatsApp, llamada saliente]
+
+  - id: A6
+    angle: "Sin app, sin descargas, sin complicaciones"
+    hook: "Tus clientes escanean el QR y ya. No descargan nada."
+    target_persona: [PER3 indirectamente, PER1/PER2 directamente]
+    supporting_facts: ["Spec: 'Sin apps, sin complicaciones'."]
+    channels: [Landing, Instagram]
+
+  - id: A7
+    angle: "Demo sin registro"
+    hook: "Toca aquí y mira cómo se ve tu carta en MenuQR."
+    target_persona: [PER1, PER2]
+    supporting_facts: ["/demo no requiere login, datos de Cevichería Limeña."]
+    channels: [Landing, Ads]
+
+content_ideas:
+  - "Caso de uso: cevichería en Miraflores actualiza precio de jalea mixta de S/ 40 a S/ 45 en 5 segundos."
+  - "Hilo de Twitter/X: '5 razones por las que tu carta impresa te está haciendo perder plata.'"
+  - "Reel: dueño antes (apilando cartas) / después (escaneando QR)."
+  - "Comparativa: PDF vs MenuQR — actualización, idiomas, agotado."
+```
+
+---
+
+## 19. COMPETITIVE_LANDSCAPE [FACT]
+
+```yaml
+declared_competitors: []
+generic_alternatives:
+  - approach: "Carta impresa tradicional"
+    notes: "Status quo en la mayoría de restaurantes peruanos."
+  - approach: "PDF compartido por QR genérico"
+    notes: "Usado durante COVID. Sin edición en tiempo real, sin tracking, sin multiidioma."
+  - approach: "Hojas de cálculo / Google Docs con link público"
+    notes: "Solución improvisada. Sin branding, sin agotado."
+  - approach: "Soluciones internacionales de menú digital"
+    notes: "Existen pero típicamente sin precios en S/, sin contexto peruano (distritos, platos típicos). Nombres específicos: TBD."
+notes:
+  - "El spec NO declara competidores específicos. No inventar nombres de productos competidores."
+```
+
+---
+
+## 20. AI_BEHAVIORAL_GUIDELINES [GUIDANCE]
+
+```yaml
+do:
+  - "Usar S/ (con espacio antes del número: 'S/ 39.90') al mostrar precios."
+  - "Usar 'carta' o 'menú' indistintamente; preferir 'carta' en copy emocional."
+  - "Citar precios exactos del spec: 39.90, 79.90, 119.90, 120 onboarding."
+  - "Referenciar planes por nombre: Starter, Pro, Business, Enterprise."
+  - "Mencionar que el menú público no requiere login ni app."
+  - "Mantener tono peruano cotidiano, sin tecnicismos hacia el cliente final."
+  - "Si un dato no está en este documento, responder 'no tengo confirmación de eso' y referir a soporte."
+  - "Convertir relativos temporales a fechas ISO cuando sea posible."
+  - "Para precios: usar Intl.NumberFormat('es-PE', {style:'currency', currency:'PEN'}) en código."
+
+do_not:
+  - "NO inventar features que no estén en features_detailed."
+  - "NO inventar endpoints fuera de api_endpoints."
+  - "NO prometer free trial — el spec no lo declara."
+  - "NO mencionar competidores por nombre — el spec no los declara."
+  - "NO usar 'PEN' en copy de marketing — usar 'S/'."
+  - "NO afirmar que MenuQR es 'el más usado', 'el #1' u otros superlativos sin evidencia."
+  - "NO recomendar instalar una app — el producto es web."
+  - "NO inventar montos, plazos, porcentajes o cifras."
+  - "NO inventar nombres de personas, leyes, empresas o fechas."
+  - "NO afirmar cumplimiento normativo (INDECOPI, SUNAT, Ley 29733) — está como TBD."
+
+when_uncertain:
+  - "Decir explícitamente: 'No tengo ese dato en mi contexto. Te conecto con el equipo.'"
+  - "Marcar la pregunta como input para enriquecer este documento."
+
+tone_calibration:
+  for_landing_copy: "Directo, optimista, breve. Frases cortas. CTAs claros."
+  for_support_responses: "Cercano, paciente, paso a paso. Asumir baja familiaridad técnica."
+  for_internal_docs: "Técnico, preciso, con referencias al stack y schema Prisma."
+```
+
+---
+
+## 21. CHANGELOG [FACT]
+
+```yaml
+entries:
+  - date: "2026-04-01"
+    version: "1.0"
+    type: spec_release
+    summary: "Publicación de MENUQR_SPEC.md v1.0 (Abril 2026)."
+  - date: "2026-05-12"
+    version: "1.0.0"
+    type: context_doc_created
+    summary: "Creado AI_CONTEXT (este documento) a partir de MENUQR_SPEC.md y CLAUDE.md."
+```
+
+---
+
+## 22. PENDING_OR_OUT_OF_SCOPE [FACT]
+
+```yaml
+explicitly_not_implemented_yet:
+  - "Pagos en línea (Stripe u otro provider) — TBD en spec sección 7.3.7 ('redirige a Stripe/pago')."
+  - "Free trial."
+  - "Programa de referrals / descuentos."
+  - "Facturación electrónica SUNAT."
+  - "App móvil nativa (el producto es 100% web)."
+  - "Integración con POS / sistemas de comanda."
+  - "Pedidos / carrito (MenuQR es solo carta digital, no toma pedidos)."
+  - "Pasarela de pagos para el comensal final."
+  - "Notificaciones push."
+  - "Reservas de mesa."
+  - "Programa de fidelidad / cupones."
+
+out_of_scope_by_design:
+  - "MenuQR muestra la carta. NO procesa pedidos ni cobros del comensal."
+  - "MenuQR no provee fotografía profesional (excepto si el onboarding asistido lo incluyera — verificar)."
+```
+
+---
+
+## 23. SUPPORT_CONTACT_HINTS [FACT]
+
+```yaml
+emails:
+  - role: superadmin
+    email: "admin@menuqr.pe"
+    notes: "Cuenta de seed para desarrollo."
+  - role: general
+    email: "hola@menuqr.pe"
+    notes: "EMAIL_FROM declarado en variables de entorno (Resend)."
+  - role: demo_account
+    email: "demo@cevicherialimena.pe"
+    notes: "Usuario del restaurante demo en seed."
+
+phone: TBD
+whatsapp: TBD
+hours: TBD
+channels: TBD
+help_center_url: TBD
+```
+
+---
+
+## 24. UNKNOWNS_TO_CLARIFY [GUIDANCE]
+
+```yaml
+critical:
+  - field: launch_date / current_status
+    why: "No declarado en spec. Necesario para todo copy que mencione 'ya disponible' vs 'próximamente'."
+  - field: payment_methods + billing_provider
+    why: "Spec menciona 'Stripe/pago' como ejemplo pero no confirma. Sin esto no se puede asegurar tarjetas/Yape/Plin."
+  - field: free_trial
+    why: "No declarado. Copy podría asumir incorrectamente prueba gratis."
+  - field: referrals_or_bonuses + discounts_or_promos
+    why: "No declarados. Evitar inventarlos."
+
+high:
+  - field: compliance.known_constraints
+    why: "INDECOPI / Ley 29733 / SUNAT no mencionados. Validar con legal antes de copy de Términos/Privacidad."
+  - field: competitive_landscape.declared_competitors
+    why: "Spec no lista competidores reales. Necesario para battle cards."
+  - field: api_endpoints.method
+    why: "CLAUDE.md lista paths pero no métodos HTTP. Necesario para documentación dev."
+
+medium:
+  - field: support_contact_hints (phone, whatsapp, hours, help_center_url)
+    why: "Solo emails declarados."
+  - field: brand_identity.logo_concept
+    why: "No hay descripción del logo final ni archivo confirmado."
+  - field: onboarding_assisted_service.includes (cobertura de fotografía profesional)
+    why: "Spec dice 'fotos' pero no aclara si son provistas o solo carga de las existentes."
+
+low:
+  - field: testimonios reales
+    why: "La landing declara 3 testimonios ficticios. Reemplazar con reales antes de prod."
+  - field: stats reales en landing
+    why: "'+500 restaurantes' es claim del spec. Verificar si es real o aspiracional."
+```
+
+---
+
+**END OF DOCUMENT.**

@@ -30,8 +30,8 @@ model Restaurant {
   name           String
   description    String?
   logoUrl        String?
-  primaryColor   String      @default("#C0392B")
-  bgColor        String      @default("#FFF8F0")
+  primaryColor   String      @default("#C9A96E")
+  bgColor        String      @default("#FAF7F2")
   fontFamily     String      @default("inter")
   phone          String?
   address        String?
@@ -70,6 +70,7 @@ model Category {
   restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   items        MenuItem[]
   createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now()) @updatedAt
 }
 
 model MenuItem {
@@ -80,7 +81,7 @@ model MenuItem {
   description   String?
   descriptionEn String?
   descriptionPt String?
-  price         Float
+  price         Decimal   @db.Decimal(10, 2)
   imageUrl      String?
   isAvailable   Boolean   @default(true)
   order         Int       @default(0)
@@ -154,4 +155,45 @@ enum TxStatus {
   PENDING
   PAID
   FAILED
+}
+
+model Ad {
+  id          String         @id @default(cuid())
+  advertiser  String
+  imageUrl    String
+  linkUrl     String
+  altText     String
+  placement   AdPlacement
+  isActive    Boolean        @default(true)
+  startDate   DateTime
+  endDate     DateTime?
+  impressions Int            @default(0)
+  clicks      Int            @default(0)
+  cpmRate     Decimal?
+  cpcRate     Decimal?
+  events      AdImpression[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([placement, isActive])
+}
+
+model AdImpression {
+  id           String   @id @default(cuid())
+  adId         String
+  ad           Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
+  restaurantId String
+  source       String?
+  language     String?
+  kind         String   @default("impression")
+  createdAt    DateTime @default(now())
+
+  @@index([adId, createdAt])
+  @@index([restaurantId, createdAt])
+}
+
+enum AdPlacement {
+  BETWEEN_CATEGORIES
+  MENU_FOOTER
+  DASHBOARD_BANNER
 }
