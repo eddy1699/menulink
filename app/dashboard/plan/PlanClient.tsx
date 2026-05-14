@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Check, X, CreditCard, AlertTriangle, CheckCircle2, MessageCircle } from 'lucide-react'
+import { Check, X, CreditCard, AlertTriangle, CheckCircle2, Mail } from 'lucide-react'
 import { PLAN_NAMES, PLAN_PRICES } from '@/lib/plan-limits'
 import { PaymentForm } from '@/components/dashboard/PaymentForm'
 
@@ -420,12 +420,12 @@ export function PlanClient({
               className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
               style={{ backgroundColor: '#dcfce7' }}
             >
-              <MessageCircle size={20} className="text-green-700" />
+              <Mail size={20} className="text-green-700" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-semibold text-base" style={{ color: 'var(--brand-dark)' }}>
-                  Soporte Prioritario WhatsApp
+                  Soporte Prioritario por correo
                 </h3>
                 {prioritySupport?.status === 'active' && (
                   <Badge style={{ backgroundColor: '#dcfce7', color: '#166534' }} className="text-xs">
@@ -439,7 +439,7 @@ export function PlanClient({
                 )}
               </div>
               <p className="text-sm mb-3" style={{ color: 'var(--brand-muted)' }}>
-                Línea directa con el equipo. Respuesta &lt; 2h en horario laboral. S/ 19.90/mes.
+                Tus correos al equipo entran a la cola prioritaria. Respuesta garantizada en &lt; 4h hábiles. S/ 19.90/mes.
               </p>
 
               {prioritySupport?.status === 'active' && prioritySupport.currentPeriodEnd && (
